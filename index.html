@@ -50,9 +50,7 @@ tailwind.config = {
     background:conic-gradient(from 0deg, var(--accent), transparent 30%, transparent 70%, var(--warm), var(--accent));
     animation:spinBorder 4s linear infinite; opacity:0.8;
   }
-  .upload-wrapper::after {
-    content:''; position:absolute; inset:2px; border-radius:18px; background:var(--card);
-  }
+  .upload-wrapper::after { content:''; position:absolute; inset:2px; border-radius:18px; background:var(--card); }
   .upload-wrapper > * { position:relative; z-index:1; }
   @keyframes spinBorder { to { transform:rotate(360deg); } }
   .upload-wrapper.drag-over::before { opacity:1; filter:brightness(1.5); }
@@ -60,165 +58,62 @@ tailwind.config = {
   .reveal { opacity:0; transform:translateY(40px); transition:all 0.8s cubic-bezier(0.16,1,0.3,1); }
   .reveal.visible { opacity:1; transform:translateY(0); }
 
-  /* ===== Excel-Like Preview ===== */
   .excel-frame {
-    background:#f3f3f3;
-    border-radius:6px;
-    overflow:hidden;
+    background:#f3f3f3; border-radius:6px; overflow:hidden;
     box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04);
   }
-  .excel-titlebar {
-    background:#217346;
-    padding:6px 14px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
+  .excel-titlebar { background:#217346; padding:6px 14px; display:flex; align-items:center; gap:8px; }
   .excel-titlebar .tab {
-    background:rgba(255,255,255,0.18);
-    color:#fff;
-    padding:3px 16px;
-    border-radius:3px 3px 0 0;
-    font-size:12px;
-    font-family:'Calibri','Segoe UI',sans-serif;
-    font-weight:500;
+    background:rgba(255,255,255,0.18); color:#fff; padding:3px 16px;
+    border-radius:3px 3px 0 0; font-size:12px; font-family:'Calibri','Segoe UI',sans-serif; font-weight:500;
   }
-  .excel-titlebar .filename {
-    color:rgba(255,255,255,0.8);
-    font-size:12px;
-    font-family:'Calibri','Segoe UI',sans-serif;
-  }
+  .excel-titlebar .filename { color:rgba(255,255,255,0.8); font-size:12px; font-family:'Calibri','Segoe UI',sans-serif; }
   .excel-formula-bar {
-    background:#fff;
-    border-bottom:1px solid #d4d4d4;
-    padding:4px 8px;
-    display:flex;
-    align-items:center;
-    gap:6px;
-    font-family:'Calibri','Segoe UI',sans-serif;
+    background:#fff; border-bottom:1px solid #d4d4d4; padding:4px 8px;
+    display:flex; align-items:center; gap:6px; font-family:'Calibri','Segoe UI',sans-serif;
   }
   .excel-formula-bar .cell-ref {
-    background:#f3f3f3;
-    border:1px solid #c6c6c6;
-    padding:2px 8px;
-    font-size:11px;
-    color:#333;
-    min-width:50px;
-    text-align:center;
-    border-radius:2px;
+    background:#f3f3f3; border:1px solid #c6c6c6; padding:2px 8px;
+    font-size:11px; color:#333; min-width:50px; text-align:center; border-radius:2px;
   }
-  .excel-formula-bar .fx {
-    font-size:12px;
-    color:#333;
-    font-style:italic;
-    font-weight:600;
-    min-width:20px;
-  }
+  .excel-formula-bar .fx { font-size:12px; color:#333; font-style:italic; font-weight:600; min-width:20px; }
   .excel-formula-bar .formula-text {
-    flex:1;
-    border:1px solid #c6c6c6;
-    padding:2px 6px;
-    font-size:11px;
-    color:#333;
-    border-radius:2px;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+    flex:1; border:1px solid #c6c6c6; padding:2px 6px; font-size:11px;
+    color:#333; border-radius:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
   }
-  .excel-grid-wrap {
-    overflow:auto;
-    max-height:520px;
-    position:relative;
-  }
+  .excel-grid-wrap { overflow:auto; max-height:520px; position:relative; }
   .excel-grid {
-    border-collapse:collapse;
-    width:100%;
-    font-family:'Calibri','Segoe UI',sans-serif;
-    font-size:11.5px;
-    color:#000;
+    border-collapse:collapse; width:100%;
+    font-family:'Calibri','Segoe UI',sans-serif; font-size:11.5px; color:#000;
   }
   .excel-grid .col-header-row th {
-    background:#f8f8f8;
-    border:1px solid #c6c6c6;
-    padding:3px 6px;
-    font-weight:500;
-    color:#333;
-    text-align:center;
-    font-size:11px;
-    position:sticky;
-    top:0;
-    z-index:4;
-    min-width:40px;
-    background-clip:padding-box;
+    background:#f8f8f8; border:1px solid #c6c6c6; padding:3px 6px;
+    font-weight:500; color:#333; text-align:center; font-size:11px;
+    position:sticky; top:0; z-index:4; min-width:40px; background-clip:padding-box;
   }
   .excel-grid .col-header-row th:first-child {
-    position:sticky;
-    left:0;
-    z-index:6;
-    min-width:36px;
-    width:36px;
-    background:#f8f8f8;
+    position:sticky; left:0; z-index:6; min-width:36px; width:36px; background:#f8f8f8;
   }
   .excel-grid .data-row-header {
-    background:#f8f8f8;
-    border:1px solid #c6c6c6;
-    padding:1px 6px;
-    text-align:center;
-    font-size:11px;
-    color:#333;
-    position:sticky;
-    left:0;
-    z-index:2;
-    width:36px;
-    min-width:36px;
+    background:#f8f8f8; border:1px solid #c6c6c6; padding:1px 6px;
+    text-align:center; font-size:11px; color:#333;
+    position:sticky; left:0; z-index:2; width:36px; min-width:36px;
   }
   .excel-grid .statement-header td {
-    background:#217346;
-    color:#fff;
-    font-weight:600;
-    padding:8px 10px;
-    border:1px solid #196b3b;
-    text-align:left;
-    font-size:12px;
-    letter-spacing:0.2px;
-    white-space:nowrap;
+    background:#217346; color:#fff; font-weight:600; padding:8px 10px;
+    border:1px solid #196b3b; text-align:left; font-size:12px; letter-spacing:0.2px; white-space:nowrap;
   }
   .excel-grid .info-row td {
-    background:#e8f5e9;
-    padding:5px 10px;
-    border:1px solid #c6c6c6;
-    font-size:11px;
-    color:#1a5e35;
-    font-weight:500;
+    background:#e8f5e9; padding:5px 10px; border:1px solid #c6c6c6;
+    font-size:11px; color:#1a5e35; font-weight:500;
   }
   .excel-grid .data-cell {
-    padding:4px 10px;
-    border:1px solid #d4d4d4;
-    background:#fff;
-    color:#000;
-    line-height:1.4;
+    padding:4px 10px; border:1px solid #d4d4d4; background:#fff; color:#000; line-height:1.4;
   }
-  .excel-grid .data-cell.narration {
-    white-space:normal;
-    min-width:260px;
-    max-width:380px;
-    word-wrap:break-word;
-  }
-  .excel-grid .data-cell.num-cell {
-    text-align:right;
-    font-variant-numeric:tabular-nums;
-    white-space:nowrap;
-  }
-  .excel-grid .data-cell.date-cell {
-    white-space:nowrap;
-    text-align:center;
-  }
-  .excel-grid .data-cell.ref-cell {
-    text-align:center;
-    white-space:nowrap;
-    font-size:11px;
-    color:#444;
-  }
+  .excel-grid .data-cell.narration { white-space:normal; min-width:260px; max-width:380px; word-wrap:break-word; }
+  .excel-grid .data-cell.num-cell { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .excel-grid .data-cell.date-cell { white-space:nowrap; text-align:center; }
+  .excel-grid .data-cell.ref-cell { text-align:center; white-space:nowrap; font-size:11px; color:#444; }
 
   .morph-container { position:relative; width:200px; height:200px; margin:0 auto; }
   .morph-pdf, .morph-xl {
@@ -255,10 +150,7 @@ tailwind.config = {
   .btn-glow:hover { transform:translateY(-2px); }
 
   .pulse-ring { animation:pulseRing 2s ease-out infinite; }
-  @keyframes pulseRing {
-    0% { transform:scale(1); opacity:0.6; }
-    100% { transform:scale(2.5); opacity:0; }
-  }
+  @keyframes pulseRing { 0% { transform:scale(1); opacity:0.6; } 100% { transform:scale(2.5); opacity:0; } }
 
   .step-line { position:absolute; top:28px; left:56px; right:0; height:2px; background:var(--border); }
   .step-line::after { content:''; position:absolute; inset:0; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 1s ease; }
@@ -282,19 +174,10 @@ tailwind.config = {
     padding:4px 10px 4px 4px; border-radius:20px;
     border:1px solid var(--border); transition:all 0.35s ease;
   }
-  .footer-credit:hover {
-    color:var(--accent); border-color:var(--accent);
-    background:rgba(0,214,126,0.06);
-  }
-  .footer-credit img {
-    width:24px; height:24px; border-radius:50%;
-    border:1.5px solid var(--border); transition:border-color 0.35s;
-  }
+  .footer-credit:hover { color:var(--accent); border-color:var(--accent); background:rgba(0,214,126,0.06); }
+  .footer-credit img { width:24px; height:24px; border-radius:50%; border:1.5px solid var(--border); transition:border-color 0.35s; }
   .footer-credit:hover img { border-color:var(--accent); }
-  .footer-credit .dev-arrow {
-    font-size:10px; opacity:0; transform:translateX(-4px);
-    transition:all 0.35s ease;
-  }
+  .footer-credit .dev-arrow { font-size:10px; opacity:0; transform:translateX(-4px); transition:all 0.35s ease; }
   .footer-credit:hover .dev-arrow { opacity:1; transform:translateX(0); }
 
   @media (prefers-reduced-motion: reduce) {
@@ -304,7 +187,6 @@ tailwind.config = {
 </head>
 <body>
 
-<!-- Navigation -->
 <nav class="fixed top-0 w-full z-50 backdrop-blur-xl bg-brand-bg/70 border-b border-brand-border/50">
   <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
     <a href="#" class="flex items-center gap-2.5">
@@ -318,13 +200,10 @@ tailwind.config = {
       <a href="#converter" class="hover:text-brand-fg transition-colors">Converter</a>
       <a href="#how-it-works" class="hover:text-brand-fg transition-colors">How It Works</a>
     </div>
-    <a href="#converter" class="btn-glow bg-brand-accent text-brand-bg px-5 py-2 rounded-lg text-sm font-semibold font-heading">
-      Start Converting
-    </a>
+    <a href="#converter" class="btn-glow bg-brand-accent text-brand-bg px-5 py-2 rounded-lg text-sm font-semibold font-heading">Start Converting</a>
   </div>
 </nav>
 
-<!-- Hero Section -->
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
   <canvas id="heroCanvas"></canvas>
   <div class="blob blob-1"></div>
@@ -351,29 +230,18 @@ tailwind.config = {
       </a>
     </div>
     <div class="flex items-center justify-center gap-8 sm:gap-14 mt-16 text-center">
-      <div>
-        <div class="font-heading text-2xl sm:text-3xl font-bold text-brand-fg stat-num" data-count="10">0</div>
-        <div class="text-xs text-brand-muted mt-1">GB Max Size</div>
-      </div>
+      <div><div class="font-heading text-2xl sm:text-3xl font-bold text-brand-fg stat-num" data-count="10">0</div><div class="text-xs text-brand-muted mt-1">GB Max Size</div></div>
       <div class="w-px h-10 bg-brand-border"></div>
-      <div>
-        <div class="font-heading text-2xl sm:text-3xl font-bold text-brand-accent stat-num" data-count="100">0</div>
-        <div class="text-xs text-brand-muted mt-1">% Accuracy</div>
-      </div>
+      <div><div class="font-heading text-2xl sm:text-3xl font-bold text-brand-accent stat-num" data-count="100">0</div><div class="text-xs text-brand-muted mt-1">% Accuracy</div></div>
       <div class="w-px h-10 bg-brand-border"></div>
-      <div>
-        <div class="font-heading text-2xl sm:text-3xl font-bold text-brand-fg stat-num" data-count="0">0</div>
-        <div class="text-xs text-brand-muted mt-1">Server Uploads</div>
-      </div>
+      <div><div class="font-heading text-2xl sm:text-3xl font-bold text-brand-fg stat-num" data-count="0">0</div><div class="text-xs text-brand-muted mt-1">Server Uploads</div></div>
     </div>
   </div>
   <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-brand-muted text-xs animate-bounce">
-    <span>Scroll</span>
-    <i class="fa-solid fa-chevron-down"></i>
+    <span>Scroll</span><i class="fa-solid fa-chevron-down"></i>
   </div>
 </section>
 
-<!-- Features Section -->
 <section id="features" class="py-28 px-6">
   <div class="max-w-7xl mx-auto">
     <div class="text-center mb-16 reveal">
@@ -381,53 +249,16 @@ tailwind.config = {
       <p class="text-brand-muted text-lg max-w-xl mx-auto">Every edge case handled — multi-line narrations, Indian number formatting, running balances, page breaks.</p>
     </div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div class="feature-card reveal">
-        <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5">
-          <i class="fa-solid fa-hard-drive text-brand-accent text-lg"></i>
-        </div>
-        <h3 class="font-heading font-semibold text-lg mb-2">10GB File Support</h3>
-        <p class="text-brand-muted text-sm leading-relaxed">Handles massive PDFs with hundreds of pages. Streaming processing prevents memory overload.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5">
-          <i class="fa-solid fa-shield-halved text-brand-accent text-lg"></i>
-        </div>
-        <h3 class="font-heading font-semibold text-lg mb-2">100% Client-Side</h3>
-        <p class="text-brand-muted text-sm leading-relaxed">Your financial data never leaves your browser. No server, no cloud, no risk of data exposure.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5">
-          <i class="fa-solid fa-building-columns text-brand-accent text-lg"></i>
-        </div>
-        <h3 class="font-heading font-semibold text-lg mb-2">Bank-Optimized Parsing</h3>
-        <p class="text-brand-muted text-sm leading-relaxed">Pre-tuned for HDFC, SBI, ICICI, Axis, Kotak and more. Recognizes statement layouts automatically.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5">
-          <i class="fa-solid fa-indian-rupee-sign text-brand-accent text-lg"></i>
-        </div>
-        <h3 class="font-heading font-semibold text-lg mb-2">Indian Number Format</h3>
-        <p class="text-brand-muted text-sm leading-relaxed">Lakhs and crores formatting preserved perfectly — 1,25,000.00 stays exactly as is in Excel.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5">
-          <i class="fa-solid fa-table-cells text-brand-accent text-lg"></i>
-        </div>
-        <h3 class="font-heading font-semibold text-lg mb-2">Single Excel Output</h3>
-        <p class="text-brand-muted text-sm leading-relaxed">Multi-page PDFs merge into one clean worksheet. Proper column widths, headers, and number formatting.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5">
-          <i class="fa-solid fa-bullseye text-brand-accent text-lg"></i>
-        </div>
-        <h3 class="font-heading font-semibold text-lg mb-2">Zero Data Loss</h3>
-        <p class="text-brand-muted text-sm leading-relaxed">Position-aware parsing ensures every narration, reference number, and balance is captured accurately.</p>
-      </div>
+      <div class="feature-card reveal"><div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5"><i class="fa-solid fa-hard-drive text-brand-accent text-lg"></i></div><h3 class="font-heading font-semibold text-lg mb-2">10GB File Support</h3><p class="text-brand-muted text-sm leading-relaxed">Handles massive PDFs with hundreds of pages. Streaming processing prevents memory overload.</p></div>
+      <div class="feature-card reveal"><div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5"><i class="fa-solid fa-shield-halved text-brand-accent text-lg"></i></div><h3 class="font-heading font-semibold text-lg mb-2">100% Client-Side</h3><p class="text-brand-muted text-sm leading-relaxed">Your financial data never leaves your browser. No server, no cloud, no risk of data exposure.</p></div>
+      <div class="feature-card reveal"><div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5"><i class="fa-solid fa-building-columns text-brand-accent text-lg"></i></div><h3 class="font-heading font-semibold text-lg mb-2">Bank-Optimized Parsing</h3><p class="text-brand-muted text-sm leading-relaxed">Pre-tuned for HDFC, SBI, ICICI, Axis, Kotak and more. Recognizes statement layouts automatically.</p></div>
+      <div class="feature-card reveal"><div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5"><i class="fa-solid fa-indian-rupee-sign text-brand-accent text-lg"></i></div><h3 class="font-heading font-semibold text-lg mb-2">Indian Number Format</h3><p class="text-brand-muted text-sm leading-relaxed">Lakhs and crores formatting preserved perfectly — 1,25,000.00 stays exactly as is in Excel.</p></div>
+      <div class="feature-card reveal"><div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5"><i class="fa-solid fa-table-cells text-brand-accent text-lg"></i></div><h3 class="font-heading font-semibold text-lg mb-2">Single Excel Output</h3><p class="text-brand-muted text-sm leading-relaxed">Multi-page PDFs merge into one clean worksheet. Proper column widths, headers, and number formatting.</p></div>
+      <div class="feature-card reveal"><div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5"><i class="fa-solid fa-bullseye text-brand-accent text-lg"></i></div><h3 class="font-heading font-semibold text-lg mb-2">Zero Data Loss</h3><p class="text-brand-muted text-sm leading-relaxed">Position-aware parsing ensures every narration, reference number, and balance is captured accurately.</p></div>
     </div>
   </div>
 </section>
 
-<!-- Converter Section -->
 <section id="converter" class="py-28 px-6 relative">
   <div class="blob blob-1" style="opacity:0.08; top:auto; bottom:0; left:30%;"></div>
   <div class="max-w-6xl mx-auto">
@@ -436,14 +267,11 @@ tailwind.config = {
       <p class="text-brand-muted text-lg">Drop any bank PDF below and get a perfect Excel file in seconds.</p>
     </div>
 
-    <!-- State: Upload -->
     <div id="stateUpload" class="reveal">
       <div class="upload-wrapper max-w-2xl mx-auto" id="uploadWrapper">
         <div class="bg-brand-card rounded-[18px] p-10 sm:p-16 text-center cursor-pointer" id="dropZone">
           <div class="relative inline-block mb-6">
-            <div class="w-20 h-20 rounded-2xl bg-brand-accent/10 flex items-center justify-center">
-              <i class="fa-solid fa-cloud-arrow-up text-brand-accent text-3xl"></i>
-            </div>
+            <div class="w-20 h-20 rounded-2xl bg-brand-accent/10 flex items-center justify-center"><i class="fa-solid fa-cloud-arrow-up text-brand-accent text-3xl"></i></div>
             <div class="absolute inset-0 w-20 h-20 rounded-2xl border-2 border-brand-accent/40 pulse-ring"></div>
           </div>
           <h3 class="font-heading text-xl font-semibold mb-2">Drop your bank PDF here</h3>
@@ -460,55 +288,37 @@ tailwind.config = {
       </div>
       <div id="fileInfo" class="hidden max-w-2xl mx-auto mt-5 bg-brand-card border border-brand-border rounded-xl p-4 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
-            <i class="fa-solid fa-file-pdf text-red-400"></i>
-          </div>
-          <div>
-            <div class="text-sm font-medium" id="fileName">—</div>
-            <div class="text-xs text-brand-muted" id="fileSize">—</div>
-          </div>
+          <div class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center"><i class="fa-solid fa-file-pdf text-red-400"></i></div>
+          <div><div class="text-sm font-medium" id="fileName">—</div><div class="text-xs text-brand-muted" id="fileSize">—</div></div>
         </div>
         <div class="flex items-center gap-3">
-          <button id="btnConvert" class="btn-glow bg-brand-accent text-brand-bg px-6 py-2.5 rounded-lg text-sm font-bold font-heading">
-            Convert to Excel
-          </button>
-          <button id="btnRemove" class="w-9 h-9 rounded-lg border border-brand-border flex items-center justify-center text-brand-muted hover:text-red-400 hover:border-red-400/30 transition-colors">
-            <i class="fa-solid fa-xmark text-sm"></i>
-          </button>
+          <button id="btnConvert" class="btn-glow bg-brand-accent text-brand-bg px-6 py-2.5 rounded-lg text-sm font-bold font-heading">Convert to Excel</button>
+          <button id="btnRemove" class="w-9 h-9 rounded-lg border border-brand-border flex items-center justify-center text-brand-muted hover:text-red-400 hover:border-red-400/30 transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
         </div>
       </div>
     </div>
 
-    <!-- State: Processing -->
     <div id="stateProcessing" class="hidden max-w-2xl mx-auto text-center">
       <div class="bg-brand-card border border-brand-border rounded-2xl p-10 sm:p-14">
-        <div class="morph-container mb-8">
-          <div class="morph-pdf" id="morphPdf">PDF</div>
-          <div class="morph-xl" id="morphXl">XLS</div>
-        </div>
+        <div class="morph-container mb-8"><div class="morph-pdf" id="morphPdf">PDF</div><div class="morph-xl" id="morphXl">XLS</div></div>
         <h3 class="font-heading text-xl font-semibold mb-2" id="processingTitle">Extracting Text...</h3>
         <p class="text-brand-muted text-sm mb-6" id="processingSubtitle">Reading page 1 of your document</p>
         <div class="w-full h-2 bg-brand-border rounded-full overflow-hidden mb-4">
           <div class="h-full bg-gradient-to-r from-brand-accent to-emerald-300 rounded-full transition-all duration-500" id="progressBar" style="width:0%"></div>
         </div>
         <div class="flex items-center justify-between text-xs text-brand-muted">
-          <span id="progressPercent">0%</span>
-          <span id="progressDetail">Initializing...</span>
+          <span id="progressPercent">0%</span><span id="progressDetail">Initializing...</span>
         </div>
-        <div class="mt-6 text-left bg-brand-bg/50 rounded-lg p-4 max-h-32 overflow-y-auto" id="processLog">
+        <div class="mt-6 text-left bg-brand-bg/50 rounded-lg p-4 max-h-40 overflow-y-auto" id="processLog">
           <div class="text-xs text-brand-muted font-mono space-y-1" id="logContent"></div>
         </div>
       </div>
     </div>
 
-    <!-- State: Preview -->
     <div id="statePreview" class="hidden">
       <div class="bg-brand-card border border-brand-border rounded-xl p-4 mb-5 flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center gap-6">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-check-circle text-brand-accent"></i>
-            <span class="text-sm font-medium">Conversion Complete</span>
-          </div>
+          <div class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-brand-accent"></i><span class="text-sm font-medium">Conversion Complete</span></div>
           <div class="flex items-center gap-4 text-xs text-brand-muted">
             <span><strong class="text-brand-fg" id="statRows">0</strong> rows</span>
             <span><strong class="text-brand-fg" id="statPages">0</strong> pages</span>
@@ -516,18 +326,11 @@ tailwind.config = {
           </div>
         </div>
         <div class="flex items-center gap-3">
-          <button id="btnRawText" class="border border-brand-border text-brand-fg px-4 py-2 rounded-lg text-sm font-medium hover:border-brand-muted transition-colors">
-            <i class="fa-solid fa-code mr-1.5"></i>Raw Text
-          </button>
-          <button id="btnNewFile" class="border border-brand-border text-brand-fg px-4 py-2 rounded-lg text-sm font-medium hover:border-brand-muted transition-colors">
-            <i class="fa-solid fa-plus mr-1.5"></i>New File
-          </button>
-          <button id="btnDownload" class="btn-glow bg-brand-accent text-brand-bg px-6 py-2.5 rounded-lg text-sm font-bold font-heading">
-            <i class="fa-solid fa-download mr-1.5"></i>Download Excel
-          </button>
+          <button id="btnRawText" class="border border-brand-border text-brand-fg px-4 py-2 rounded-lg text-sm font-medium hover:border-brand-muted transition-colors"><i class="fa-solid fa-code mr-1.5"></i>Raw Text</button>
+          <button id="btnNewFile" class="border border-brand-border text-brand-fg px-4 py-2 rounded-lg text-sm font-medium hover:border-brand-muted transition-colors"><i class="fa-solid fa-plus mr-1.5"></i>New File</button>
+          <button id="btnDownload" class="btn-glow bg-brand-accent text-brand-bg px-6 py-2.5 rounded-lg text-sm font-bold font-heading"><i class="fa-solid fa-download mr-1.5"></i>Download Excel</button>
         </div>
       </div>
-      <!-- Excel-like frame -->
       <div class="excel-frame" id="excelFrame">
         <div class="excel-titlebar">
           <i class="fa-solid fa-file-excel text-white text-sm"></i>
@@ -550,7 +353,6 @@ tailwind.config = {
   </div>
 </section>
 
-<!-- How It Works -->
 <section id="how-it-works" class="py-28 px-6">
   <div class="max-w-5xl mx-auto">
     <div class="text-center mb-16 reveal">
@@ -558,58 +360,27 @@ tailwind.config = {
       <p class="text-brand-muted text-lg">No sign-up, no upload, no waiting. It all happens in your browser.</p>
     </div>
     <div class="grid md:grid-cols-3 gap-8">
-      <div class="reveal text-center relative">
-        <div class="hidden md:block step-line" id="stepLine1"></div>
-        <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center mx-auto mb-5 font-heading font-bold text-brand-accent text-lg">1</div>
-        <h3 class="font-heading font-semibold text-lg mb-2">Upload PDF</h3>
-        <p class="text-brand-muted text-sm leading-relaxed">Drag and drop your bank statement PDF. Supports HDFC, SBI, ICICI, Axis, and all major Indian banks.</p>
-      </div>
-      <div class="reveal text-center relative" style="transition-delay:0.15s">
-        <div class="hidden md:block step-line" id="stepLine2"></div>
-        <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center mx-auto mb-5 font-heading font-bold text-brand-accent text-lg">2</div>
-        <h3 class="font-heading font-semibold text-lg mb-2">Auto-Convert</h3>
-        <p class="text-brand-muted text-sm leading-relaxed">PDF.js extracts text with precise coordinates. Our parser identifies columns, narrations, and amounts by position.</p>
-      </div>
-      <div class="reveal text-center" style="transition-delay:0.3s">
-        <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center mx-auto mb-5 font-heading font-bold text-brand-accent text-lg">3</div>
-        <h3 class="font-heading font-semibold text-lg mb-2">Download Excel</h3>
-        <p class="text-brand-muted text-sm leading-relaxed">Preview the extracted data in a table, verify accuracy, then download a clean .xlsx file with proper formatting.</p>
-      </div>
+      <div class="reveal text-center relative"><div class="hidden md:block step-line" id="stepLine1"></div><div class="w-14 h-14 rounded-2xl bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center mx-auto mb-5 font-heading font-bold text-brand-accent text-lg">1</div><h3 class="font-heading font-semibold text-lg mb-2">Upload PDF</h3><p class="text-brand-muted text-sm leading-relaxed">Drag and drop your bank statement PDF. Supports HDFC, SBI, ICICI, Axis, and all major Indian banks.</p></div>
+      <div class="reveal text-center relative" style="transition-delay:0.15s"><div class="hidden md:block step-line" id="stepLine2"></div><div class="w-14 h-14 rounded-2xl bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center mx-auto mb-5 font-heading font-bold text-brand-accent text-lg">2</div><h3 class="font-heading font-semibold text-lg mb-2">Auto-Convert</h3><p class="text-brand-muted text-sm leading-relaxed">PDF.js extracts text with precise coordinates. Our parser identifies columns, narrations, and amounts by position.</p></div>
+      <div class="reveal text-center" style="transition-delay:0.3s"><div class="w-14 h-14 rounded-2xl bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center mx-auto mb-5 font-heading font-bold text-brand-accent text-lg">3</div><h3 class="font-heading font-semibold text-lg mb-2">Download Excel</h3><p class="text-brand-muted text-sm leading-relaxed">Preview the extracted data in a table, verify accuracy, then download a clean .xlsx file with proper formatting.</p></div>
     </div>
   </div>
 </section>
 
-<!-- Supported Banks -->
 <section class="py-20 px-6 border-t border-brand-border/30">
   <div class="max-w-5xl mx-auto text-center reveal">
     <h3 class="font-heading text-lg font-semibold text-brand-muted mb-8">Optimized For All Major Banks</h3>
     <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-sm text-brand-muted/70">
-      <span class="hover:text-brand-fg transition-colors">HDFC Bank</span>
-      <span class="hover:text-brand-fg transition-colors">State Bank of India</span>
-      <span class="hover:text-brand-fg transition-colors">ICICI Bank</span>
-      <span class="hover:text-brand-fg transition-colors">Axis Bank</span>
-      <span class="hover:text-brand-fg transition-colors">Kotak Mahindra</span>
-      <span class="hover:text-brand-fg transition-colors">Punjab National Bank</span>
-      <span class="hover:text-brand-fg transition-colors">Bank of Baroda</span>
-      <span class="hover:text-brand-fg transition-colors">Canara Bank</span>
-      <span class="hover:text-brand-fg transition-colors">Union Bank</span>
-      <span class="hover:text-brand-fg transition-colors">IndusInd Bank</span>
-      <span class="hover:text-brand-fg transition-colors">Yes Bank</span>
-      <span class="hover:text-brand-fg transition-colors">Federal Bank</span>
+      <span class="hover:text-brand-fg transition-colors">HDFC Bank</span><span class="hover:text-brand-fg transition-colors">State Bank of India</span><span class="hover:text-brand-fg transition-colors">ICICI Bank</span><span class="hover:text-brand-fg transition-colors">Axis Bank</span><span class="hover:text-brand-fg transition-colors">Kotak Mahindra</span><span class="hover:text-brand-fg transition-colors">Punjab National Bank</span><span class="hover:text-brand-fg transition-colors">Bank of Baroda</span><span class="hover:text-brand-fg transition-colors">Canara Bank</span><span class="hover:text-brand-fg transition-colors">Union Bank</span><span class="hover:text-brand-fg transition-colors">IndusInd Bank</span><span class="hover:text-brand-fg transition-colors">Yes Bank</span><span class="hover:text-brand-fg transition-colors">Federal Bank</span>
     </div>
   </div>
 </section>
 
-<!-- Footer -->
 <footer class="border-t border-brand-border/30 py-10 px-6">
   <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-2 text-sm text-brand-muted">
-      <div class="w-6 h-6 rounded bg-brand-accent flex items-center justify-center">
-        <i class="fa-solid fa-file-excel text-brand-bg text-[10px]"></i>
-      </div>
-      <span>PDF2XL Pro</span>
-      <span class="text-brand-border">|</span>
-      <span>Client-side only. No data leaves your device.</span>
+      <div class="w-6 h-6 rounded bg-brand-accent flex items-center justify-center"><i class="fa-solid fa-file-excel text-brand-bg text-[10px]"></i></div>
+      <span>PDF2XL Pro</span><span class="text-brand-border">|</span><span>Client-side only. No data leaves your device.</span>
     </div>
     <a href="https://gravatar.com/katragaddasurendra" target="_blank" rel="noopener noreferrer" class="footer-credit" aria-label="Developer: katragadaa_surendra">
       <img src="https://ui-avatars.com/api/?name=KS&background=0d1512&color=00d67e&size=48&rounded=true&bold=true" alt="Dev" width="24" height="24">
@@ -617,898 +388,595 @@ tailwind.config = {
       <i class="fa-solid fa-arrow-up-right-from-square dev-arrow"></i>
     </a>
   </div>
-  <div class="max-w-7xl mx-auto mt-4 text-center">
-    <div class="text-xs text-brand-muted/40">Built with PDF.js + SheetJS. No server required.</div>
-  </div>
+  <div class="max-w-7xl mx-auto mt-4 text-center"><div class="text-xs text-brand-muted/40">Built with PDF.js + SheetJS. No server required.</div></div>
 </footer>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ========== PDF.js Worker Setup ==========
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 // ========== Particle System ==========
-(function initParticles() {
+(function(){
   const canvas = document.getElementById('heroCanvas');
   const ctx = canvas.getContext('2d');
-  let particles = [];
-  let mouse = { x: -1000, y: -1000 };
-  let w, h;
-  function resize() {
-    w = canvas.width = canvas.parentElement.offsetWidth;
-    h = canvas.height = canvas.parentElement.offsetHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-  canvas.parentElement.addEventListener('mousemove', e => {
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
-  });
-  const PARTICLE_COUNT = Math.min(80, Math.floor(window.innerWidth / 18));
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
-    particles.push({
-      x: Math.random() * 2000, y: Math.random() * 1200,
-      vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
-      r: Math.random() * 2 + 0.5, alpha: Math.random() * 0.5 + 0.2
-    });
-  }
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 150) {
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(0,214,126,${0.08 * (1 - dist / 150)})`;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
-        }
+  let particles = [], mouse = {x:-1000,y:-1000}, w, h;
+  function resize(){ w = canvas.width = canvas.parentElement.offsetWidth; h = canvas.height = canvas.parentElement.offsetHeight; }
+  resize(); window.addEventListener('resize', resize);
+  canvas.parentElement.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); mouse.x = e.clientX-r.left; mouse.y = e.clientY-r.top; });
+  const N = Math.min(80, Math.floor(window.innerWidth/18));
+  for(let i=0;i<N;i++) particles.push({x:Math.random()*2000,y:Math.random()*1200,vx:(Math.random()-0.5)*0.4,vy:(Math.random()-0.5)*0.4,r:Math.random()*2+0.5,a:Math.random()*0.5+0.2});
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<150){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(0,214,126,${0.08*(1-d/150)})`;ctx.lineWidth=0.5;ctx.stroke();}
       }
-      const mdx = particles[i].x - mouse.x;
-      const mdy = particles[i].y - mouse.y;
-      const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
-      if (mDist < 200) {
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(mouse.x, mouse.y);
-        ctx.strokeStyle = `rgba(0,214,126,${0.15 * (1 - mDist / 200)})`;
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
-      }
+      const dx2=particles[i].x-mouse.x,dy2=particles[i].y-mouse.y,d2=Math.sqrt(dx2*dx2+dy2*dy2);
+      if(d2<200){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(mouse.x,mouse.y);ctx.strokeStyle=`rgba(0,214,126,${0.15*(1-d2/200)})`;ctx.lineWidth=0.8;ctx.stroke();}
     }
-    for (const p of particles) {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(0,214,126,${p.alpha})`;
-      ctx.fill();
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > w) p.vx *= -1;
-      if (p.y < 0 || p.y > h) p.vy *= -1;
-    }
+    for(const p of particles){ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(0,214,126,${p.a})`;ctx.fill();p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;}
     requestAnimationFrame(draw);
   }
   draw();
 })();
 
-// ========== Scroll Reveal ==========
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 });
+const observer = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), {threshold:0.1});
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// ========== Stat Counter Animation ==========
-const statObserver = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      const el = e.target;
-      const target = parseInt(el.dataset.count);
-      let current = 0;
-      const step = Math.max(1, Math.ceil(target / 40));
-      const timer = setInterval(() => {
-        current += step;
-        if (current >= target) { current = target; clearInterval(timer); }
-        el.textContent = current;
-      }, 30);
-      statObserver.unobserve(el);
-    }
-  });
-}, { threshold: 0.5 });
+const statObserver = new IntersectionObserver(e => e.forEach(x => {
+  if(x.isIntersecting){ const el=x.target,t=parseInt(el.dataset.count);let c=0;const s=Math.max(1,Math.ceil(t/40));const ti=setInterval(()=>{c+=s;if(c>=t){c=t;clearInterval(ti);}el.textContent=c;},30);statObserver.unobserve(el);}
+}), {threshold:0.5});
 document.querySelectorAll('.stat-num').forEach(el => statObserver.observe(el));
 
-// ========== Toast ==========
-function showToast(msg, type = 'success') {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.className = `toast ${type} show`;
-  setTimeout(() => toast.classList.remove('show'), 4000);
-}
+function showToast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove('show'),4000);}
 
-// ========== File Handling ==========
-let currentFile = null;
-let convertedData = null;
-let convertedHeaders = null;
-let totalPagesExtracted = 0;
-let statementInfo = '';
+let currentFile=null, convertedData=null, convertedHeaders=null, totalPagesExtracted=0, statementInfo='';
 
-const dropZone = document.getElementById('dropZone');
-const fileInput = document.getElementById('fileInput');
-const uploadWrapper = document.getElementById('uploadWrapper');
-const fileInfo = document.getElementById('fileInfo');
+const dropZone=document.getElementById('dropZone'), fileInput=document.getElementById('fileInput'),
+      uploadWrapper=document.getElementById('uploadWrapper'), fileInfo=document.getElementById('fileInfo');
 
-dropZone.addEventListener('click', () => fileInput.click());
-dropZone.addEventListener('dragover', e => { e.preventDefault(); uploadWrapper.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => uploadWrapper.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  uploadWrapper.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file) handleFile(file);
-});
-fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+dropZone.addEventListener('click',()=>fileInput.click());
+dropZone.addEventListener('dragover',e=>{e.preventDefault();uploadWrapper.classList.add('drag-over');});
+dropZone.addEventListener('dragleave',()=>uploadWrapper.classList.remove('drag-over'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();uploadWrapper.classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f)handleFile(f);});
+fileInput.addEventListener('change',e=>{if(e.target.files[0])handleFile(e.target.files[0]);});
 
-function handleFile(file) {
-  if (file.type !== 'application/pdf') {
-    showToast('Please upload a PDF file.', 'error');
-    return;
-  }
-  currentFile = file;
-  document.getElementById('fileName').textContent = file.name;
-  document.getElementById('fileSize').textContent = formatSize(file.size);
+function handleFile(file){
+  if(file.type!=='application/pdf'){showToast('Please upload a PDF file.','error');return;}
+  currentFile=file;
+  document.getElementById('fileName').textContent=file.name;
+  document.getElementById('fileSize').textContent=formatSize(file.size);
   fileInfo.classList.remove('hidden');
-  dropZone.style.opacity = '0.5';
-  dropZone.style.pointerEvents = 'none';
+  dropZone.style.opacity='0.5';dropZone.style.pointerEvents='none';
 }
+document.getElementById('btnRemove').addEventListener('click',()=>{currentFile=null;fileInput.value='';fileInfo.classList.add('hidden');dropZone.style.opacity='1';dropZone.style.pointerEvents='auto';});
+document.getElementById('btnConvert').addEventListener('click',()=>{if(currentFile)startConversion(currentFile);});
+document.getElementById('btnNewFile').addEventListener('click',()=>{showState('upload');currentFile=null;convertedData=null;convertedHeaders=null;statementInfo='';fileInput.value='';fileInfo.classList.add('hidden');dropZone.style.opacity='1';dropZone.style.pointerEvents='auto';});
+document.getElementById('btnDownload').addEventListener('click',()=>{if(convertedData&&convertedHeaders)downloadExcel(convertedHeaders,convertedData);});
+document.getElementById('btnRawText').addEventListener('click',()=>{document.getElementById('rawTextPanel').classList.toggle('hidden');});
 
-document.getElementById('btnRemove').addEventListener('click', () => {
-  currentFile = null;
-  fileInput.value = '';
-  fileInfo.classList.add('hidden');
-  dropZone.style.opacity = '1';
-  dropZone.style.pointerEvents = 'auto';
-});
+function formatSize(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';if(b<1073741824)return(b/1048576).toFixed(1)+' MB';return(b/1073741824).toFixed(2)+' GB';}
+function showState(s){document.getElementById('stateUpload').classList.toggle('hidden',s!=='upload');document.getElementById('stateProcessing').classList.toggle('hidden',s!=='processing');document.getElementById('statePreview').classList.toggle('hidden',s!=='preview');}
+function updateProgress(p,t,st,d){document.getElementById('progressBar').style.width=p+'%';document.getElementById('progressPercent').textContent=p+'%';if(t)document.getElementById('processingTitle').textContent=t;if(st)document.getElementById('processingSubtitle').textContent=st;if(d)document.getElementById('progressDetail').textContent=d;}
+function addLog(msg){const l=document.getElementById('logContent'),d=document.createElement('div'),n=new Date(),ts=n.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});d.textContent=`[${ts}] ${msg}`;l.appendChild(d);l.parentElement.scrollTop=l.parentElement.scrollHeight;}
+function colLetter(n){let s='';n++;while(n>0){n--;s=String.fromCharCode(65+(n%26))+s;n=Math.floor(n/26);}return s;}
 
-document.getElementById('btnConvert').addEventListener('click', () => {
-  if (currentFile) startConversion(currentFile);
-});
-
-document.getElementById('btnNewFile').addEventListener('click', () => {
-  showState('upload');
-  currentFile = null;
-  convertedData = null;
-  convertedHeaders = null;
-  statementInfo = '';
-  fileInput.value = '';
-  fileInfo.classList.add('hidden');
-  dropZone.style.opacity = '1';
-  dropZone.style.pointerEvents = 'auto';
-});
-
-document.getElementById('btnDownload').addEventListener('click', () => {
-  if (convertedData && convertedHeaders) downloadExcel(convertedHeaders, convertedData);
-});
-
-document.getElementById('btnRawText').addEventListener('click', () => {
-  document.getElementById('rawTextPanel').classList.toggle('hidden');
-});
-
-function formatSize(bytes) {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-  if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + ' MB';
-  return (bytes / 1073741824).toFixed(2) + ' GB';
-}
-
-function showState(state) {
-  document.getElementById('stateUpload').classList.toggle('hidden', state !== 'upload');
-  document.getElementById('stateProcessing').classList.toggle('hidden', state !== 'processing');
-  document.getElementById('statePreview').classList.toggle('hidden', state !== 'preview');
-}
-
-// ========== Processing ==========
-function updateProgress(pct, title, subtitle, detail) {
-  document.getElementById('progressBar').style.width = pct + '%';
-  document.getElementById('progressPercent').textContent = pct + '%';
-  if (title) document.getElementById('processingTitle').textContent = title;
-  if (subtitle) document.getElementById('processingSubtitle').textContent = subtitle;
-  if (detail) document.getElementById('progressDetail').textContent = detail;
-}
-
-function addLog(msg) {
-  const log = document.getElementById('logContent');
-  const line = document.createElement('div');
-  const now = new Date();
-  const ts = now.toLocaleTimeString('en-US', { hour12: false, hour:'2-digit', minute:'2-digit', second:'2-digit' });
-  line.textContent = `[${ts}] ${msg}`;
-  log.appendChild(line);
-  log.parentElement.scrollTop = log.parentElement.scrollHeight;
-}
-
-// Column letters for Excel preview
-function colLetter(n) {
-  let s = '';
-  n++;
-  while (n > 0) { n--; s = String.fromCharCode(65 + (n % 26)) + s; n = Math.floor(n / 26); }
-  return s;
-}
-
-async function startConversion(file) {
+// ========================================================================
+// MAIN CONVERSION — with Y-offset fix for multi-page
+// ========================================================================
+async function startConversion(file){
   showState('processing');
-  const morphPdf = document.getElementById('morphPdf');
-  const morphXl = document.getElementById('morphXl');
-  morphPdf.classList.remove('done'); morphXl.classList.remove('done');
-  morphPdf.classList.add('processing'); morphXl.classList.add('processing');
-  document.getElementById('logContent').innerHTML = '';
+  const mP=document.getElementById('morphPdf'),mX=document.getElementById('morphXl');
+  mP.classList.remove('done');mX.classList.remove('done');mP.classList.add('processing');mX.classList.add('processing');
+  document.getElementById('logContent').innerHTML='';
 
   try {
-    updateProgress(5, 'Loading PDF...', 'Reading file into memory', 'Initializing PDF.js');
-    addLog('Loading PDF file: ' + file.name + ' (' + formatSize(file.size) + ')');
-
-    const arrayBuffer = await file.arrayBuffer();
-    updateProgress(10, 'Loading PDF...', 'Parsing document structure', 'PDF.js initializing');
-    addLog('File loaded into memory, parsing PDF structure...');
-
-    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-    const pdf = await loadingTask.promise;
+    updateProgress(5,'Loading PDF...','Reading file into memory','Initializing PDF.js');
+    addLog('Loading: '+file.name+' ('+formatSize(file.size)+')');
+    const ab = await file.arrayBuffer();
+    updateProgress(10,'Loading PDF...','Parsing document structure','PDF.js initializing');
+    const pdf = await pdfjsLib.getDocument({data:ab}).promise;
     totalPagesExtracted = pdf.numPages;
-    addLog(`PDF loaded: ${totalPagesExtracted} page(s) detected`);
-    updateProgress(15, 'Extracting Text...', `Processing page 1 of ${totalPagesExtracted}`, 'Text extraction started');
+    addLog(`PDF: ${totalPagesExtracted} page(s)`);
+    updateProgress(15,'Extracting Text...',`Page 1 of ${totalPagesExtracted}`,'Starting');
 
+    // ====== CRITICAL FIX: cumulative Y-offset per page ======
     const allItems = [];
+    let yOffset = 0;
+    const pageStats = []; // track items per page
 
-    for (let i = 1; i <= totalPagesExtracted; i++) {
+    for(let i=1; i<=totalPagesExtracted; i++){
       const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const viewport = page.getViewport({ scale: 1 });
-      for (const item of textContent.items) {
-        if (item.str && item.str.trim()) {
+      const tc = await page.getTextContent();
+      const vp = page.getViewport({scale:1});
+      let pageItemCount = 0;
+
+      for(const item of tc.items){
+        if(item.str && item.str.trim()){
           const [, , , scaleY, tx, ty] = item.transform;
           allItems.push({
-            text: item.str, x: tx,
-            y: viewport.height - ty,
+            text: item.str,
+            x: tx,
+            y: yOffset + (vp.height - ty),  // offset so page N sits below page N-1
             width: item.width,
             height: Math.abs(item.height * scaleY),
             page: i
           });
+          pageItemCount++;
         }
       }
-      const pct = 15 + Math.floor((i / totalPagesExtracted) * 45);
-      updateProgress(pct, 'Extracting Text...', `Processing page ${i} of ${totalPagesExtracted}`, `${allItems.length} text items extracted`);
-      if (i % 5 === 0 || i === totalPagesExtracted) addLog(`Page ${i}/${totalPagesExtracted} extracted — ${allItems.length} text items total`);
-      await new Promise(r => setTimeout(r, 10));
-    }
-    addLog(`Text extraction complete: ${allItems.length} text items from ${totalPagesExtracted} pages`);
 
-    if (allItems.length === 0) {
-      throw new Error('No extractable text found in this PDF. The file might be a scanned image. Please use a text-based PDF.');
+      pageStats.push({page: i, items: pageItemCount});
+      yOffset += vp.height + 20; // 20px gap between pages to prevent edge blending
+
+      const pct = 15 + Math.floor((i/totalPagesExtracted)*45);
+      updateProgress(pct,'Extracting Text...',`Page ${i} of ${totalPagesExtracted}`,`${allItems.length} items`);
+      addLog(`Page ${i}/${totalPagesExtracted}: ${pageItemCount} text items`);
+      await new Promise(r=>setTimeout(r,10));
+    }
+    addLog(`Extraction done: ${allItems.length} total items across ${totalPagesExtracted} pages`);
+
+    // Log per-page stats
+    for(const ps of pageStats){
+      addLog(`  Page ${ps.page}: ${ps.items} items`);
     }
 
-    // Extract statement period info (From/To dates)
+    if(allItems.length===0) throw new Error('No extractable text found. The PDF may be a scanned image. Please use a text-based PDF.');
+
     statementInfo = extractStatementInfo(allItems);
-    if (statementInfo) addLog(`Statement period detected: ${statementInfo}`);
+    if(statementInfo) addLog('Period: '+statementInfo);
 
-    updateProgress(62, 'Parsing Table...', 'Identifying columns and rows', 'Position-based analysis');
-    addLog('Starting multi-strategy table parsing...');
-    await new Promise(r => setTimeout(r, 50));
+    updateProgress(62,'Parsing Table...','Identifying columns and rows','Multi-strategy analysis');
+    addLog('Starting multi-strategy parsing...');
+    await new Promise(r=>setTimeout(r,50));
 
     let result = null;
 
-    addLog('[Strategy 1] Keyword-based header detection...');
+    // Strategy 1
+    addLog('[Strategy 1] Keyword header detection...');
     result = parseStrategyKeyword(allItems);
-    if (result.rows.length > 0) {
-      addLog(`Strategy 1 SUCCESS: ${result.rows.length} rows, ${result.headers.length} columns`);
-    } else {
-      addLog('Strategy 1: No rows found, trying next strategy...');
-    }
+    if(result.rows.length>0) addLog(`Strategy 1 OK: ${result.rows.length} rows`);
+    else addLog('Strategy 1: no rows');
 
-    if (!result || result.rows.length === 0) {
-      updateProgress(72, 'Trying Alternate Parser...', 'Structure-based detection', 'Analyzing table layout');
-      addLog('[Strategy 2] Structure-based column detection...');
+    // Strategy 2
+    if(!result||result.rows.length===0){
+      updateProgress(72,'Alternate Parser...','Structure detection','Layout analysis');
+      addLog('[Strategy 2] Structure-based detection...');
       result = parseStrategyStructure(allItems);
-      if (result.rows.length > 0) {
-        addLog(`Strategy 2 SUCCESS: ${result.rows.length} rows, ${result.headers.length} columns`);
-      } else {
-        addLog('Strategy 2: No rows found, trying next strategy...');
-      }
+      if(result.rows.length>0) addLog(`Strategy 2 OK: ${result.rows.length} rows`);
+      else addLog('Strategy 2: no rows');
     }
 
-    if (!result || result.rows.length === 0) {
-      updateProgress(80, 'Trying Regex Parser...', 'Pattern-based extraction', 'Searching for transaction patterns');
-      addLog('[Strategy 3] Regex-based pattern extraction...');
+    // Strategy 3
+    if(!result||result.rows.length===0){
+      updateProgress(80,'Regex Parser...','Pattern extraction','Transaction search');
+      addLog('[Strategy 3] Regex pattern extraction...');
       result = parseStrategyRegex(allItems);
-      if (result.rows.length > 0) {
-        addLog(`Strategy 3 SUCCESS: ${result.rows.length} rows, ${result.headers.length} columns`);
-      } else {
-        addLog('Strategy 3: No rows found, trying last resort...');
-      }
+      if(result.rows.length>0) addLog(`Strategy 3 OK: ${result.rows.length} rows`);
+      else addLog('Strategy 3: no rows');
     }
 
-    if (!result || result.rows.length === 0) {
-      updateProgress(88, 'Last Resort Parser...', 'Finding any date-containing lines', 'Broad extraction');
-      addLog('[Strategy 4] Broad date-based extraction...');
+    // Strategy 4
+    if(!result||result.rows.length===0){
+      updateProgress(88,'Last Resort...','Broad extraction','Any date lines');
+      addLog('[Strategy 4] Broad date extraction...');
       result = parseStrategyBroad(allItems);
-      if (result.rows.length > 0) {
-        addLog(`Strategy 4 SUCCESS: ${result.rows.length} rows, ${result.headers.length} columns`);
-      } else {
-        addLog('Strategy 4: No rows found.');
-      }
+      if(result.rows.length>0) addLog(`Strategy 4 OK: ${result.rows.length} rows`);
+      else addLog('Strategy 4: no rows');
     }
 
-    if (!result || result.rows.length === 0) {
-      throw new Error('Could not detect a table in this PDF. The file may not contain tabular data, or it may be a scanned image. Please ensure the PDF has selectable text with a table structure.');
-    }
+    if(!result||result.rows.length===0) throw new Error('Could not detect a table in this PDF. The file may not contain tabular data, or it may be a scanned image.');
 
-    // Normalize headers to standard bank statement columns
+    // ====== POST-PROCESSING: merge multi-line narrations & remove repeated headers ======
+    addLog('Post-processing: removing repeated headers...');
+    result.rows = removeRepeatedHeaders(result.rows, result.headers);
+    addLog(`After header removal: ${result.rows.length} rows`);
+
+    addLog('Post-processing: merging multi-line narrations...');
+    result.rows = mergeMultiLineNarrations(result.rows, result.headers);
+    addLog(`After narration merge: ${result.rows.length} rows`);
+
+    // Normalize to standard columns
     const normalized = normalizeHeaders(result.headers, result.rows);
 
-    updateProgress(92, 'Building Preview...', 'Rendering data table', 'Almost done');
-    addLog(`Final result: ${normalized.headers.length} columns x ${normalized.rows.length} rows`);
-    await new Promise(r => setTimeout(r, 200));
+    updateProgress(92,'Building Preview...','Rendering table','Almost done');
+    addLog(`Final: ${normalized.headers.length} cols x ${normalized.rows.length} rows`);
+    await new Promise(r=>setTimeout(r,200));
 
     convertedHeaders = normalized.headers;
     convertedData = normalized.rows;
-
     renderExcelPreview(normalized.headers, normalized.rows, result.rawLines);
     document.getElementById('rawTextContent').textContent = result.rawLines.join('\n');
 
-    updateProgress(100, 'Conversion Complete', `${normalized.rows.length} rows extracted from ${totalPagesExtracted} pages`, 'Ready to download');
-    addLog('Conversion complete! Excel file ready for download.');
+    updateProgress(100,'Conversion Complete',`${normalized.rows.length} rows from ${totalPagesExtracted} pages`,'Ready');
+    addLog('Done! Excel ready for download.');
 
-    morphPdf.classList.remove('processing');
-    morphXl.classList.remove('processing');
-    morphPdf.classList.add('done');
-    morphXl.classList.add('done');
-
-    await new Promise(r => setTimeout(r, 800));
+    mP.classList.remove('processing');mX.classList.remove('processing');
+    mP.classList.add('done');mX.classList.add('done');
+    await new Promise(r=>setTimeout(r,800));
     showState('preview');
-    showToast(`Successfully converted ${normalized.rows.length} rows to Excel.`);
+    showToast(`Converted ${normalized.rows.length} rows from ${totalPagesExtracted} pages.`);
 
-  } catch (err) {
-    addLog('ERROR: ' + err.message);
-    showToast(err.message, 'error');
-    setTimeout(() => showState('upload'), 2500);
+  } catch(err) {
+    addLog('ERROR: '+err.message);
+    showToast(err.message,'error');
+    setTimeout(()=>showState('upload'),2500);
   }
 }
 
-// ========== Extract Statement Period ==========
-function extractStatementInfo(items) {
-  const lines = groupByLine(items, 5);
-  const rawLines = lines.map(l => l.items.map(it => it.text).join(' '));
-  for (const line of rawLines) {
-    const fromTo = line.match(/(?:from|for)\s*:?\s*(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})\s*(?:to|till|-|–)\s*:?\s*(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})/i);
-    if (fromTo) return `From: ${fromTo[1]} To : ${fromTo[2]}`;
-  }
-  return '';
-}
+// ========================================================================
+// POST-PROCESSING HELPERS
+// ========================================================================
 
-// ========== Normalize Headers to Standard Bank Statement Columns ==========
-function normalizeHeaders(headers, rows) {
-  const mapping = {
-    'date': 'Date', 'txn date': 'Date', 'trans date': 'Date', 'transaction date': 'Date',
-    'narration': 'Narration', 'particulars': 'Narration', 'description': 'Narration',
-    'details': 'Narration', 'remarks': 'Narration', 'transaction details': 'Narration',
-    'cheq./ref.no.': 'Cheq./Ref.No.', 'cheque/ref no.': 'Cheq./Ref.No.',
-    'cheq. / ref. no.': 'Cheq./Ref.No.', 'ref. no.': 'Cheq./Ref.No.',
-    'ref no.': 'Cheq./Ref.No.', 'reference': 'Cheq./Ref.No.', 'ref': 'Cheq./Ref.No.',
-    'cheque no.': 'Cheq./Ref.No.', 'chq./ref. no.': 'Cheq./Ref.No.',
-    'value dt.': 'Value Dt.', 'value date': 'Value Dt.', 'val dt.': 'Value Dt.',
-    'withdrawal amt.': 'Withdrawal Amt.', 'withdrawal': 'Withdrawal Amt.',
-    'debit': 'Withdrawal Amt.', 'debit amt.': 'Withdrawal Amt.',
-    'dr': 'Withdrawal Amt.', 'debit amount': 'Withdrawal Amt.',
-    'deposit amt.': 'Deposit Amt.', 'deposit': 'Deposit Amt.',
-    'credit': 'Deposit Amt.', 'credit amt.': 'Deposit Amt.',
-    'cr': 'Deposit Amt.', 'credit amount': 'Deposit Amt.',
-    'closing balance': 'Closing Balance', 'balance': 'Closing Balance',
-    'closing bal.': 'Closing Balance', 'cl. balance': 'Closing Balance',
-    'amount': 'Withdrawal Amt.'
-  };
-
-  const standardOrder = ['Date', 'Narration', 'Cheq./Ref.No.', 'Value Dt.', 'Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance'];
-  const normalizedRows = [];
-
-  // Map each header to standard name
-  const headerMap = headers.map(h => {
-    const lower = h.toLowerCase().trim();
-    return mapping[lower] || h;
+/** Remove repeated header rows that appear on each page */
+function removeRepeatedHeaders(rows, headers){
+  if(rows.length===0) return rows;
+  const headerKeywords = ['date','narration','withdrawal','deposit','closing','balance','cheq','ref','value','debit','credit','particular','amount','details'];
+  return rows.filter(row => {
+    const combined = Object.values(row).join(' ').toLowerCase().trim();
+    // Count how many header keywords appear in this row
+    let kwCount = 0;
+    for(const kw of headerKeywords){ if(combined.includes(kw)) kwCount++; }
+    // If it matches 3+ header keywords and is short, it's a repeated header
+    if(kwCount >= 3 && combined.length < 150) return false;
+    // Also catch exact header matches
+    if(combined === headers.map(h=>h.toLowerCase()).join(' ')) return false;
+    return true;
   });
+}
 
-  // Check which standard columns we have
-  const foundCols = new Set(headerMap.filter(h => standardOrder.includes(h)));
-  // If we found a generic "Amount", check if we have separate withdrawal/deposit
-  const hasGenericAmount = headerMap.includes('Withdrawal Amt.') && headers.some(h => h.toLowerCase().trim() === 'amount');
-  
-  for (const row of rows) {
-    const newRow = {};
-    for (let i = 0; i < headers.length; i++) {
-      const stdName = headerMap[i];
-      const oldKey = headers[i];
-      // If this column maps to a standard name that already exists, try to figure out which one
-      if (stdName === 'Withdrawal Amt.' && newRow['Withdrawal Amt.'] !== undefined && newRow['Withdrawal Amt.'] !== '') {
-        // Could be deposit if we already have withdrawal
-        if (!foundCols.has('Deposit Amt.') || headerMap.filter(h => h === 'Deposit Amt.').length === 0) {
-          newRow['Deposit Amt.'] = (row[oldKey] || '').trim();
-          continue;
+/** Merge continuation lines into the previous row's narration */
+function mergeMultiLineNarrations(rows, headers){
+  if(rows.length===0) return rows;
+  // Find narration column index
+  let narrIdx = -1;
+  for(let i=0;i<headers.length;i++){
+    const h = headers[i].toLowerCase();
+    if(h.includes('narrat')||h.includes('particular')||h.includes('descript')||h.includes('detail')||h.includes('remark')){
+      narrIdx = i; break;
+    }
+  }
+  if(narrIdx===-1) narrIdx = Math.min(1, headers.length-1); // fallback to 2nd column
+  const narrKey = headers[narrIdx];
+
+  const merged = [];
+  for(let i=0;i<rows.length;i++){
+    const curr = rows[i];
+    const vals = Object.values(curr);
+    const nonEmpty = vals.filter(v=>v&&v.trim().length>0).length;
+
+    // If only 1 column has content, it's likely a continuation line
+    if(nonEmpty <= 1 && merged.length > 0){
+      const prev = merged[merged.length-1];
+      // Append to previous row's narration
+      const prevNarr = prev[narrKey]||'';
+      const currNarr = curr[narrKey]||'';
+      if(currNarr.trim()){
+        prev[narrKey] = prevNarr.trim() + ' ' + currNarr.trim();
+      }
+      // Also carry over any other non-empty values that prev is missing
+      for(const h of headers){
+        if(h!==narrKey && curr[h] && curr[h].trim() && !prev[h]){
+          prev[h] = curr[h].trim();
         }
       }
-      newRow[stdName] = (row[oldKey] || '').trim();
-    }
-    normalizedRows.push(newRow);
-  }
-
-  // Determine final headers: standard columns we have, then any extras
-  const finalHeaders = [];
-  for (const col of standardOrder) {
-    if (foundCols.has(col)) finalHeaders.push(col);
-  }
-  // Add any non-standard columns
-  for (const col of headerMap) {
-    if (!standardOrder.includes(col) && !finalHeaders.includes(col)) finalHeaders.push(col);
-  }
-
-  return { headers: finalHeaders, rows: normalizedRows };
-}
-
-// ========================================================================
-// PARSING ENGINE — 4-Strategy Fallback System
-// ========================================================================
-
-function groupByLine(items, tolerance) {
-  items.sort((a, b) => b.y - a.y || a.x - b.x);
-  const lines = [];
-  if (items.length === 0) return lines;
-  let currentLine = { y: items[0].y, items: [items[0]] };
-  for (let i = 1; i < items.length; i++) {
-    if (Math.abs(items[i].y - currentLine.y) < tolerance) {
-      currentLine.items.push(items[i]);
     } else {
-      currentLine.items.sort((a, b) => a.x - b.x);
-      currentLine.items = mergeCloseItems(currentLine.items, 2);
-      lines.push(currentLine);
-      currentLine = { y: items[i].y, items: [items[i]] };
-    }
-  }
-  currentLine.items.sort((a, b) => a.x - b.x);
-  currentLine.items = mergeCloseItems(currentLine.items, 2);
-  lines.push(currentLine);
-  return lines;
-}
-
-function mergeCloseItems(items, gap) {
-  if (items.length <= 1) return items;
-  const merged = [{ text: items[0].text, x: items[0].x, width: items[0].width }];
-  for (let i = 1; i < items.length; i++) {
-    const prev = merged[merged.length - 1];
-    const itemEnd = prev.x + prev.width;
-    if (items[i].x - itemEnd < gap) {
-      prev.text = prev.text + ' ' + items[i].text;
-      prev.width = (items[i].x + items[i].width) - prev.x;
-    } else {
-      merged.push({ text: items[i].text, x: items[i].x, width: items[i].width });
+      merged.push({...curr});
     }
   }
   return merged;
 }
 
-function looksLikeDate(text) {
-  return /^\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}/.test(text.trim());
+// ========================================================================
+// STATEMENT INFO EXTRACTOR
+// ========================================================================
+function extractStatementInfo(items){
+  const lines = groupByLine(items,5);
+  const rawLines = lines.map(l=>l.items.map(it=>it.text).join(' '));
+  for(const line of rawLines){
+    const m = line.match(/(?:from|for)\s*:?\s*(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})\s*(?:to|till|-|–)\s*:?\s*(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})/i);
+    if(m) return `From: ${m[1]} To : ${m[2]}`;
+  }
+  return '';
 }
 
-function isNonDataRow(text) {
-  const t = text.toLowerCase().trim();
-  if (t.length < 3) return true;
-  if (/^(total|grand\s*total|sub\s*total|opening\s*balance|closing\s*balance)/.test(t)) return true;
-  if (/^(page\s*\d|continued|statement\s*of\s*account|account\s*statement)/.test(t)) return true;
-  if (/^(date|txn|transaction|sr|s\.?\s*no)/.test(t) && t.length < 60) return true;
-  if (/^( hdfc|sbi|icici|axis|kotak|pnb|bob|canara|union|indusind)/.test(t)) return true;
+// ========================================================================
+// HEADER NORMALIZER
+// ========================================================================
+function normalizeHeaders(headers, rows){
+  const mapping = {
+    'date':'Date','txn date':'Date','trans date':'Date','transaction date':'Date',
+    'narration':'Narration','particulars':'Narration','description':'Narration','details':'Narration','remarks':'Narration','transaction details':'Narration',
+    'cheq./ref.no.':'Cheq./Ref.No.','cheque/ref no.':'Cheq./Ref.No.','cheq. / ref. no.':'Cheq./Ref.No.','ref. no.':'Cheq./Ref.No.','ref no.':'Cheq./Ref.No.','reference':'Cheq./Ref.No.','ref':'Cheq./Ref.No.','cheque no.':'Cheq./Ref.No.','chq./ref. no.':'Cheq./Ref.No.',
+    'value dt.':'Value Dt.','value date':'Value Dt.','val dt.':'Value Dt.',
+    'withdrawal amt.':'Withdrawal Amt.','withdrawal':'Withdrawal Amt.','debit':'Withdrawal Amt.','debit amt.':'Withdrawal Amt.','dr':'Withdrawal Amt.','debit amount':'Withdrawal Amt.',
+    'deposit amt.':'Deposit Amt.','deposit':'Deposit Amt.','credit':'Deposit Amt.','credit amt.':'Deposit Amt.','cr':'Deposit Amt.','credit amount':'Deposit Amt.',
+    'closing balance':'Closing Balance','balance':'Closing Balance','closing bal.':'Closing Balance','cl. balance':'Closing Balance',
+    'amount':'Withdrawal Amt.'
+  };
+  const stdOrder = ['Date','Narration','Cheq./Ref.No.','Value Dt.','Withdrawal Amt.','Deposit Amt.','Closing Balance'];
+  const normalizedRows = [];
+  const headerMap = headers.map(h => { const l=h.toLowerCase().trim(); return mapping[l]||h; });
+  const foundCols = new Set(headerMap.filter(h=>stdOrder.includes(h)));
+
+  for(const row of rows){
+    const newRow = {};
+    for(let i=0;i<headers.length;i++){
+      const stdName = headerMap[i];
+      const oldKey = headers[i];
+      if(stdName==='Withdrawal Amt.'&&newRow['Withdrawal Amt.']!==undefined&&newRow['Withdrawal Amt.']!==''){
+        if(!foundCols.has('Deposit Amt.')||headerMap.filter(h=>h==='Deposit Amt.').length===0){
+          newRow['Deposit Amt.']=(row[oldKey]||'').trim();continue;
+        }
+      }
+      newRow[stdName]=(row[oldKey]||'').trim();
+    }
+    normalizedRows.push(newRow);
+  }
+  const finalHeaders=[];
+  for(const c of stdOrder){if(foundCols.has(c))finalHeaders.push(c);}
+  for(const c of headerMap){if(!stdOrder.includes(c)&&!finalHeaders.includes(c))finalHeaders.push(c);}
+  return {headers:finalHeaders,rows:normalizedRows};
+}
+
+// ========================================================================
+// PARSING ENGINE UTILITIES
+// ========================================================================
+function groupByLine(items, tolerance){
+  items.sort((a,b)=>b.y-a.y||a.x-b.x);
+  const lines=[];
+  if(items.length===0) return lines;
+  let cur={y:items[0].y,items:[items[0]]};
+  for(let i=1;i<items.length;i++){
+    if(Math.abs(items[i].y-cur.y)<tolerance){ cur.items.push(items[i]); }
+    else { cur.items.sort((a,b)=>a.x-b.x); cur.items=mergeCloseItems(cur.items,2); lines.push(cur); cur={y:items[i].y,items:[items[i]]}; }
+  }
+  cur.items.sort((a,b)=>a.x-b.x); cur.items=mergeCloseItems(cur.items,2); lines.push(cur);
+  return lines;
+}
+
+function mergeCloseItems(items, gap){
+  if(items.length<=1) return items;
+  const m=[{text:items[0].text,x:items[0].x,width:items[0].width}];
+  for(let i=1;i<items.length;i++){
+    const p=m[m.length-1], end=p.x+p.width;
+    if(items[i].x-end<gap){p.text=p.text+' '+items[i].text;p.width=(items[i].x+items[i].width)-p.x;}
+    else m.push({text:items[i].text,x:items[i].x,width:items[i].width});
+  }
+  return m;
+}
+
+function looksLikeDate(t){return /^\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}/.test(t.trim());}
+
+function isNonDataRow(text){
+  const t=text.toLowerCase().trim();
+  if(t.length<3) return true;
+  if(/^(total|grand\s*total|sub\s*total|opening\s*balance|closing\s*balance)/.test(t)) return true;
+  if(/^(page\s*\d|continued|statement\s*of\s*account|account\s*statement)/.test(t)) return true;
+  if(/^from\s*:/.test(t)&&/to\s*:/.test(t)) return true; // statement period line
+  if(/^( hdfc|sbi|icici|axis|kotak|pnb|bob|canara|union|indusind)/.test(t)) return true;
   return false;
 }
 
-// --- Strategy 1 ---
-function parseStrategyKeyword(items) {
-  const lines = groupByLine(items, 5);
-  const rawLines = lines.map(l => l.items.map(it => it.text).join('  '));
-  const keywords = ['date','narration','withdrawal','deposit','closing','balance','cheq','ref','value','trans','dr','cr','debit','credit','amount','particulars','details','description','remarks','sl','no.','serial','number','type','category'];
-  let bestIdx = -1, bestScore = 0;
-  for (let i = 0; i < Math.min(lines.length, 80); i++) {
-    const text = lines[i].items.map(it => it.text).join(' ').toLowerCase();
-    let score = 0;
-    for (const kw of keywords) { if (text.includes(kw)) score++; }
-    if (lines[i].items.length >= 4) score += 2;
-    if (lines[i].items.length >= 6) score += 1;
-    if (score > bestScore) { bestScore = score; bestIdx = i; }
+// --- Strategy 1: Keyword header ---
+function parseStrategyKeyword(items){
+  const lines=groupByLine(items,5);
+  const rawLines=lines.map(l=>l.items.map(it=>it.text).join('  '));
+  const kw=['date','narration','withdrawal','deposit','closing','balance','cheq','ref','value','trans','dr','cr','debit','credit','amount','particulars','details','description','remarks','sl','no.','serial','number','type','category'];
+  let bestIdx=-1,bestScore=0;
+  for(let i=0;i<Math.min(lines.length,80);i++){
+    const text=lines[i].items.map(it=>it.text).join(' ').toLowerCase();
+    let score=0;for(const k of kw){if(text.includes(k))score++;}
+    if(lines[i].items.length>=4)score+=2;if(lines[i].items.length>=6)score+=1;
+    if(score>bestScore){bestScore=score;bestIdx=i;}
   }
-  if (bestScore < 2 || bestIdx === -1) return { headers: [], rows: [], rawLines };
-  const headerLine = lines[bestIdx];
-  addLog(`  Header found at line ${bestIdx}: "${rawLines[bestIdx].substring(0, 80)}..."`);
-  const columns = [];
-  for (let i = 0; i < headerLine.items.length; i++) {
-    const nextX = i < headerLine.items.length - 1 ? (headerLine.items[i].x + headerLine.items[i + 1].x) / 2 : headerLine.items[i].x + 300;
-    columns.push({ name: headerLine.items[i].text.trim(), x: headerLine.items[i].x, endX: nextX });
+  if(bestScore<2||bestIdx===-1) return {headers:[],rows:[],rawLines};
+  const hl=lines[bestIdx];
+  addLog(`  Header at line ${bestIdx}: "${rawLines[bestIdx].substring(0,100)}"`);
+  const cols=[];
+  for(let i=0;i<hl.items.length;i++){
+    const nx=i<hl.items.length-1?(hl.items[i].x+hl.items[i+1].x)/2:hl.items[i].x+300;
+    cols.push({name:hl.items[i].text.trim(),x:hl.items[i].x,endX:nx});
   }
-  if (columns.length < 2) return { headers: [], rows: [], rawLines };
-  const headers = columns.map(c => c.name);
-  const rows = [];
-  for (let i = bestIdx + 1; i < lines.length; i++) {
-    const line = lines[i];
-    const row = {};
-    for (const col of columns) {
-      const matching = line.items.filter(it => it.x >= col.x - 3 && it.x < col.endX);
-      row[col.name] = matching.map(it => it.text).join(' ').trim();
-    }
-    const combined = Object.values(row).join(' ');
-    if (isNonDataRow(combined)) continue;
-    if (combined.trim().length < 5) continue;
-    if (Object.values(row).filter(v => v.length > 0).length < 2) continue;
+  if(cols.length<2) return {headers:[],rows:[],rawLines};
+  const headers=cols.map(c=>c.name);
+  const rows=[];
+  for(let i=bestIdx+1;i<lines.length;i++){
+    const line=lines[i],row={};
+    for(const col of cols){const m=line.items.filter(it=>it.x>=col.x-3&&it.x<col.endX);row[col.name]=m.map(it=>it.text).join(' ').trim();}
+    const combined=Object.values(row).join(' ');
+    if(isNonDataRow(combined)) continue;
+    if(combined.trim().length<5) continue;
+    if(Object.values(row).filter(v=>v.length>0).length<1) continue; // relaxed from 2 to 1
     rows.push(row);
   }
-  return { headers, rows, rawLines };
+  return {headers,rows,rawLines};
 }
 
-// --- Strategy 2 ---
-function parseStrategyStructure(items) {
-  const lines = groupByLine(items, 5);
-  const rawLines = lines.map(l => l.items.map(it => it.text).join('  '));
-  const countMap = {};
-  for (const line of lines) {
-    const c = line.items.length;
-    if (c >= 3) countMap[c] = (countMap[c] || 0) + 1;
-  }
-  let bestCount = 0, bestFreq = 0;
-  for (const [count, freq] of Object.entries(countMap)) {
-    if (freq > bestFreq && parseInt(count) >= 3) { bestFreq = freq; bestCount = parseInt(count); }
-  }
-  if (bestCount < 3 || bestFreq < 3) return { headers: [], rows: [], rawLines };
-  addLog(`  Detected consistent ${bestCount}-column structure (${bestFreq} lines)`);
-  const tableLines = lines.filter(l => l.items.length === bestCount);
-  const headerLine = tableLines[0];
-  const columns = [];
-  for (let i = 0; i < headerLine.items.length; i++) {
-    const nextX = i < headerLine.items.length - 1 ? (headerLine.items[i].x + headerLine.items[i + 1].x) / 2 : headerLine.items[i].x + 300;
-    columns.push({ name: headerLine.items[i].text.trim() || `Column ${i + 1}`, x: headerLine.items[i].x, endX: nextX });
-  }
-  const headers = columns.map(c => c.name);
-  const rows = [];
-  for (let i = 1; i < tableLines.length; i++) {
-    const line = tableLines[i];
-    const row = {};
-    for (const col of columns) {
-      const matching = line.items.filter(it => it.x >= col.x - 3 && it.x < col.endX);
-      row[col.name] = matching.map(it => it.text).join(' ').trim();
-    }
-    const combined = Object.values(row).join(' ');
-    if (isNonDataRow(combined)) continue;
-    if (combined.trim().length < 5) continue;
+// --- Strategy 2: Structure ---
+function parseStrategyStructure(items){
+  const lines=groupByLine(items,5);
+  const rawLines=lines.map(l=>l.items.map(it=>it.text).join('  '));
+  const cm={};for(const l of lines){const c=l.items.length;if(c>=3)cm[c]=(cm[c]||0)+1;}
+  let bc=0,bf=0;for(const[c,f] of Object.entries(cm)){if(f>bf&&parseInt(c)>=3){bf=f;bc=parseInt(c);}}
+  if(bc<3||bf<3) return {headers:[],rows:[],rawLines};
+  addLog(`  ${bc}-col structure (${bf} lines)`);
+  const tl=lines.filter(l=>l.items.length===bc),hl=tl[0],cols=[];
+  for(let i=0;i<hl.items.length;i++){const nx=i<hl.items.length-1?(hl.items[i].x+hl.items[i+1].x)/2:hl.items[i].x+300;cols.push({name:hl.items[i].text.trim()||`Column ${i+1}`,x:hl.items[i].x,endX:nx});}
+  const headers=cols.map(c=>c.name),rows=[];
+  for(let i=1;i<tl.length;i++){
+    const line=tl[i],row={};
+    for(const col of cols){const m=line.items.filter(it=>it.x>=col.x-3&&it.x<col.endX);row[col.name]=m.map(it=>it.text).join(' ').trim();}
+    const combined=Object.values(row).join(' ');
+    if(isNonDataRow(combined)) continue;
+    if(combined.trim().length<5) continue;
     rows.push(row);
   }
-  return { headers, rows, rawLines };
+  return {headers,rows,rawLines};
 }
 
-// --- Strategy 3 ---
-function parseStrategyRegex(items) {
-  const lines = groupByLine(items, 5);
-  const rawLines = lines.map(l => l.items.map(it => it.text).join('  '));
-  const defaultHeaders = ['Date', 'Narration', 'Cheq./Ref.No.', 'Value Dt.', 'Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance'];
-  const rows = [];
-  const dateRegex = /^(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})\s+(.+)/;
-  for (const rawLine of rawLines) {
-    const m = rawLine.match(dateRegex);
-    if (!m) continue;
-    const date = m[1];
-    const rest = m[2].trim();
-    const amtRegex = /([\d,]+\.\d{2})/g;
-    const amounts = [];
-    let am;
-    while ((am = amtRegex.exec(rest)) !== null) amounts.push(am[1]);
-    if (amounts.length === 0) continue;
-    const firstAmtIdx = rest.indexOf(amounts[0]);
-    const narrationPart = rest.substring(0, firstAmtIdx).trim();
-    let narration = narrationPart, refNo = '', valueDt = '';
-    const refMatch = narration.match(/\s+(\d{6,14})\s*$/);
-    if (refMatch) { refNo = refMatch[1]; narration = narration.substring(0, narration.lastIndexOf(refNo)).trim(); }
-    const dtMatch = narration.match(/(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})\s*$/);
-    if (dtMatch && dtMatch[1] !== date) { valueDt = dtMatch[1]; narration = narration.substring(0, narration.lastIndexOf(dtMatch[1])).trim(); }
-    let withdrawal = '', deposit = '', balance = '';
-    if (amounts.length >= 1) balance = amounts[amounts.length - 1];
-    if (amounts.length >= 2) deposit = amounts[amounts.length - 2];
-    if (amounts.length >= 3) {
-      const narrLower = narration.toLowerCase();
-      if (narrLower.includes('withdraw') || narrLower.includes('neft') || narrLower.includes('rtgs') || narrLower.includes('transfer') || narrLower.includes('payment') || narrLower.includes('debit') || narrLower.includes('imps') || narrLower.includes('upi')) {
-        withdrawal = amounts[amounts.length - 2]; deposit = amounts[amounts.length - 3];
-      } else {
-        withdrawal = amounts[amounts.length - 3];
-      }
-    }
-    if (isNonDataRow(narration)) continue;
-    rows.push({ 'Date': date, 'Narration': narration, 'Cheq./Ref.No.': refNo, 'Value Dt.': valueDt, 'Withdrawal Amt.': withdrawal, 'Deposit Amt.': deposit, 'Closing Balance': balance });
+// --- Strategy 3: Regex ---
+function parseStrategyRegex(items){
+  const lines=groupByLine(items,5);
+  const rawLines=lines.map(l=>l.items.map(it=>it.text).join('  '));
+  const dh=['Date','Narration','Cheq./Ref.No.','Value Dt.','Withdrawal Amt.','Deposit Amt.','Closing Balance'];
+  const rows=[],dr=/^(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})\s+(.+)/;
+  for(const rl of rawLines){
+    const m=rl.match(dr);if(!m) continue;
+    const date=m[1],rest=m[2].trim();
+    const ar=/([\d,]+\.\d{2})/g,amounts=[];let am;while((am=ar.exec(rest))!==null)amounts.push(am[1]);
+    if(amounts.length===0) continue;
+    const fai=rest.indexOf(amounts[0]),np=rest.substring(0,fai).trim();
+    let narr=np,ref='',vd='';
+    const rm=narr.match(/\s+(\d{6,14})\s*$/);if(rm){ref=rm[1];narr=narr.substring(0,narr.lastIndexOf(rm[1])).trim();}
+    const dm=narr.match(/(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})\s*$/);
+    if(dm&&dm[1]!==date){vd=dm[1];narr=narr.substring(0,narr.lastIndexOf(dm[1])).trim();}
+    let w='',d='',b='';
+    if(amounts.length>=1)b=amounts[amounts.length-1];
+    if(amounts.length>=2)d=amounts[amounts.length-2];
+    if(amounts.length>=3){const nl=narr.toLowerCase();if(nl.includes('withdraw')||nl.includes('neft')||nl.includes('rtgs')||nl.includes('transfer')||nl.includes('payment')||nl.includes('debit')||nl.includes('imps')||nl.includes('upi')){w=amounts[amounts.length-2];d=amounts[amounts.length-3];}else{w=amounts[amounts.length-3];}}
+    if(isNonDataRow(narr)) continue;
+    rows.push({'Date':date,'Narration':narr,'Cheq./Ref.No.':ref,'Value Dt.':vd,'Withdrawal Amt.':w,'Deposit Amt.':d,'Closing Balance':b});
   }
-  return { headers: defaultHeaders, rows, rawLines };
+  return {headers:dh,rows,rawLines};
 }
 
-// --- Strategy 4 ---
-function parseStrategyBroad(items) {
-  const lines = groupByLine(items, 5);
-  const rawLines = lines.map(l => l.items.map(it => it.text).join('  '));
-  let headerLine = null, headerIdx = -1;
-  for (let i = 0; i < Math.min(lines.length, 40); i++) {
-    if (lines[i].items.length >= 3 && !looksLikeDate(lines[i].items[0].text)) {
-      headerLine = lines[i]; headerIdx = i; break;
-    }
-  }
-  const defaultHeaders = headerLine ? headerLine.items.map(it => it.text.trim() || 'Column') : ['Column 1', 'Column 2', 'Column 3', 'Column 4', 'Column 5'];
-  const columns = [];
-  if (headerLine) {
-    for (let i = 0; i < headerLine.items.length; i++) {
-      const nextX = i < headerLine.items.length - 1 ? (headerLine.items[i].x + headerLine.items[i + 1].x) / 2 : headerLine.items[i].x + 300;
-      columns.push({ x: headerLine.items[i].x, endX: nextX });
-    }
-  }
-  const rows = [];
-  const startIdx = headerIdx >= 0 ? headerIdx + 1 : 0;
-  for (let i = startIdx; i < lines.length; i++) {
-    const line = lines[i];
-    const lineText = line.items.map(it => it.text).join(' ');
-    if (!looksLikeDate(line.items[0]?.text || '') && !looksLikeDate(lineText)) continue;
-    if (isNonDataRow(lineText)) continue;
+// --- Strategy 4: Broad ---
+function parseStrategyBroad(items){
+  const lines=groupByLine(items,5);
+  const rawLines=lines.map(l=>l.items.map(it=>it.text).join('  '));
+  let hl=null,hi=-1;
+  for(let i=0;i<Math.min(lines.length,40);i++){if(lines[i].items.length>=3&&!looksLikeDate(lines[i].items[0].text)){hl=lines[i];hi=i;break;}}
+  const dh=hl?hl.items.map(it=>it.text.trim()||'Column'):['Column 1','Column 2','Column 3','Column 4','Column 5'];
+  const cols=[];
+  if(hl){for(let i=0;i<hl.items.length;i++){const nx=i<hl.items.length-1?(hl.items[i].x+hl.items[i+1].x)/2:hl.items[i].x+300;cols.push({x:hl.items[i].x,endX:nx});}}
+  const rows=[],si=hi>=0?hi+1:0;
+  for(let i=si;i<lines.length;i++){
+    const line=lines[i],lt=line.items.map(it=>it.text).join(' ');
+    if(!looksLikeDate(line.items[0]?.text||'')&&!looksLikeDate(lt)) continue;
+    if(isNonDataRow(lt)) continue;
     let row;
-    if (columns.length > 0) {
-      row = {};
-      for (let c = 0; c < columns.length; c++) {
-        const matching = line.items.filter(it => it.x >= columns[c].x - 3 && it.x < columns[c].endX);
-        row[defaultHeaders[c]] = matching.map(it => it.text).join(' ').trim();
-      }
-    } else {
-      row = {};
-      line.items.forEach((it, idx) => { const key = idx < defaultHeaders.length ? defaultHeaders[idx] : `Column ${idx + 1}`; row[key] = it.text.trim(); });
-    }
-    if (Object.values(row).some(v => v.length > 0)) rows.push(row);
+    if(cols.length>0){row={};for(let c=0;c<cols.length;c++){const m=line.items.filter(it=>it.x>=cols[c].x-3&&it.x<cols[c].endX);row[dh[c]]=m.map(it=>it.text).join(' ').trim();}}
+    else{row={};line.items.forEach((it,idx)=>{const k=idx<dh.length?dh[idx]:`Column ${idx+1}`;row[k]=it.text.trim();});}
+    if(Object.values(row).some(v=>v.length>0)) rows.push(row);
   }
-  return { headers: defaultHeaders, rows, rawLines };
+  return {headers:dh,rows,rawLines};
 }
 
-// ========== Render Excel-Like Preview ==========
-function renderExcelPreview(headers, rows, rawLines) {
-  const table = document.getElementById('excelGrid');
-  table.innerHTML = '';
+// ========================================================================
+// EXCEL-LIKE PREVIEW RENDERER
+// ========================================================================
+function renderExcelPreview(headers, rows, rawLines){
+  const table=document.getElementById('excelGrid');
+  table.innerHTML='';
+  document.getElementById('excelFilename').textContent=currentFile?currentFile.name.replace(/\.pdf$/i,'')+'.xlsx':'converted_statement.xlsx';
+  const numSet=new Set(['Withdrawal Amt.','Deposit Amt.','Closing Balance']);
+  const dateSet=new Set(['Date','Value Dt.']);
+  const refSet=new Set(['Cheq./Ref.No.']);
+  const narrSet=new Set(['Narration']);
 
-  // Update titlebar filename
-  const fname = currentFile ? currentFile.name.replace(/\.pdf$/i, '') + '.xlsx' : 'converted_statement.xlsx';
-  document.getElementById('excelFilename').textContent = fname;
+  // Column letters row
+  const chr=document.createElement('tr');chr.className='col-header-row';
+  chr.appendChild(document.createElement('th'));
+  for(let c=0;c<headers.length;c++){const th=document.createElement('th');th.textContent=colLetter(c);chr.appendChild(th);}
+  table.appendChild(chr);
 
-  const numColSet = new Set(['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance']);
-  const dateColSet = new Set(['Date', 'Value Dt.']);
-  const refColSet = new Set(['Cheq./Ref.No.']);
-  const narrColSet = new Set(['Narration']);
+  let er=1;
 
-  // Column letter header row
-  const colHeaderRow = document.createElement('tr');
-  colHeaderRow.className = 'col-header-row';
-  const cornerTh = document.createElement('th');
-  cornerTh.textContent = '';
-  colHeaderRow.appendChild(cornerTh);
-  for (let c = 0; c < headers.length; c++) {
-    const th = document.createElement('th');
-    th.textContent = colLetter(c);
-    colHeaderRow.appendChild(th);
-  }
-  table.appendChild(colHeaderRow);
-
-  let excelRow = 1;
-
-  // Statement info row (if available)
-  if (statementInfo) {
-    const infoTr = document.createElement('tr');
-    infoTr.className = 'info-row';
-    const infoNumTd = document.createElement('td');
-    infoNumTd.className = 'data-row-header';
-    infoNumTd.textContent = excelRow++;
-    infoTr.appendChild(infoNumTd);
-    const infoTd = document.createElement('td');
-    infoTd.colSpan = headers.length;
-    infoTd.textContent = statementInfo;
-    infoTr.appendChild(infoTd);
-    table.appendChild(infoTr);
+  // Statement period info
+  if(statementInfo){
+    const tr=document.createElement('tr');tr.className='info-row';
+    const nd=document.createElement('td');nd.className='data-row-header';nd.textContent=er++;tr.appendChild(nd);
+    const td=document.createElement('td');td.colSpan=headers.length;td.textContent=statementInfo;tr.appendChild(td);
+    table.appendChild(tr);
   }
 
-  // Green statement header row
-  const headerTr = document.createElement('tr');
-  headerTr.className = 'statement-header';
-  const headerNumTd = document.createElement('td');
-  headerNumTd.className = 'data-row-header';
-  headerNumTd.style.background = '#196b3b';
-  headerNumTd.style.color = '#fff';
-  headerNumTd.style.border = '1px solid #196b3b';
-  headerNumTd.textContent = excelRow++;
-  headerTr.appendChild(headerNumTd);
-  for (const h of headers) {
-    const td = document.createElement('td');
-    td.textContent = h;
-    headerTr.appendChild(td);
-  }
-  table.appendChild(headerTr);
+  // Green header row
+  const hr=document.createElement('tr');hr.className='statement-header';
+  const hnd=document.createElement('td');hnd.className='data-row-header';hnd.style.background='#196b3b';hnd.style.color='#fff';hnd.style.border='1px solid #196b3b';hnd.textContent=er++;hr.appendChild(hnd);
+  for(const h of headers){const td=document.createElement('td');td.textContent=h;hr.appendChild(td);}
+  table.appendChild(hr);
 
   // Data rows
-  const previewRows = rows.slice(0, 300);
-  for (let i = 0; i < previewRows.length; i++) {
-    const tr = document.createElement('tr');
-    tr.style.opacity = '0';
-    tr.style.transition = `opacity 0.3s ease ${Math.min(i * 12, 600)}ms`;
-
-    const numTd = document.createElement('td');
-    numTd.className = 'data-row-header';
-    numTd.textContent = excelRow++;
-    tr.appendChild(numTd);
-
-    for (const h of headers) {
-      const td = document.createElement('td');
-      td.className = 'data-cell';
-      const val = (rows[i][h] || '').trim();
-      td.textContent = val || '';
-
-      if (narrColSet.has(h)) td.classList.add('narration');
-      else if (numColSet.has(h)) td.classList.add('num-cell');
-      else if (dateColSet.has(h)) td.classList.add('date-cell');
-      else if (refColSet.has(h)) td.classList.add('ref-cell');
-
+  const pr=rows.slice(0,500);
+  for(let i=0;i<pr.length;i++){
+    const tr=document.createElement('tr');
+    tr.style.opacity='0';tr.style.transition=`opacity 0.3s ease ${Math.min(i*10,500)}ms`;
+    const nd=document.createElement('td');nd.className='data-row-header';nd.textContent=er++;tr.appendChild(nd);
+    for(const h of headers){
+      const td=document.createElement('td');td.className='data-cell';
+      td.textContent=(rows[i][h]||'').trim()||'';
+      if(narrSet.has(h)) td.classList.add('narration');
+      else if(numSet.has(h)) td.classList.add('num-cell');
+      else if(dateSet.has(h)) td.classList.add('date-cell');
+      else if(refSet.has(h)) td.classList.add('ref-cell');
       tr.appendChild(td);
     }
     table.appendChild(tr);
-
-    requestAnimationFrame(() => { requestAnimationFrame(() => { tr.style.opacity = '1'; }); });
+    requestAnimationFrame(()=>{requestAnimationFrame(()=>{tr.style.opacity='1';});});
+  }
+  if(rows.length>500){
+    const tr=document.createElement('tr');
+    const nd=document.createElement('td');nd.className='data-row-header';nd.textContent=er++;tr.appendChild(nd);
+    const td=document.createElement('td');td.colSpan=headers.length;td.className='data-cell';td.style.textAlign='center';td.style.color='#888';td.style.fontStyle='italic';
+    td.textContent=`Showing 500 of ${rows.length} rows. Download Excel for full data.`;tr.appendChild(td);table.appendChild(tr);
   }
 
-  if (rows.length > 300) {
-    const tr = document.createElement('tr');
-    const numTd = document.createElement('td');
-    numTd.className = 'data-row-header';
-    numTd.textContent = excelRow++;
-    tr.appendChild(numTd);
-    const td = document.createElement('td');
-    td.colSpan = headers.length;
-    td.className = 'data-cell';
-    td.style.textAlign = 'center';
-    td.style.color = '#888';
-    td.style.fontStyle = 'italic';
-    td.textContent = `Showing 300 of ${rows.length} rows. Download Excel for full data.`;
-    tr.appendChild(td);
-    table.appendChild(tr);
-  }
-
-  // Formula bar interaction on hover
-  table.addEventListener('mouseover', e => {
-    const td = e.target.closest('td.data-cell');
-    if (td) {
-      const tr = td.closest('tr');
-      const rowTd = tr.querySelector('.data-row-header');
-      const colIdx = Array.from(tr.children).indexOf(td) - 1;
-      if (rowTd && colIdx >= 0 && colIdx < headers.length) {
-        document.getElementById('formulaRef').textContent = colLetter(colIdx) + rowTd.textContent;
-        document.getElementById('formulaText').textContent = td.textContent;
-      }
-    }
+  table.addEventListener('mouseover',e=>{
+    const td=e.target.closest('td.data-cell');
+    if(td){const tr=td.closest('tr'),rn=tr.querySelector('.data-row-header'),ci=Array.from(tr.children).indexOf(td)-1;
+    if(rn&&ci>=0&&ci<headers.length){document.getElementById('formulaRef').textContent=colLetter(ci)+rn.textContent;document.getElementById('formulaText').textContent=td.textContent;}}
   });
 
-  document.getElementById('statRows').textContent = rows.length;
-  document.getElementById('statCols').textContent = headers.length;
-  document.getElementById('statPages').textContent = totalPagesExtracted;
+  document.getElementById('statRows').textContent=rows.length;
+  document.getElementById('statCols').textContent=headers.length;
+  document.getElementById('statPages').textContent=totalPagesExtracted;
 }
 
-// ========== Download Excel ==========
-function downloadExcel(headers, rows) {
-  const wb = XLSX.utils.book_new();
-  const aoa = [];
-
-  // Statement info row
-  if (statementInfo) {
-    aoa.push([statementInfo]);
-  }
-
-  // Header row
+// ========================================================================
+// EXCEL DOWNLOAD
+// ========================================================================
+function downloadExcel(headers, rows){
+  const wb=XLSX.utils.book_new(), aoa=[];
+  if(statementInfo) aoa.push([statementInfo]);
   aoa.push(headers);
-
-  // Data rows
-  for (const row of rows) {
-    aoa.push(headers.map(h => (row[h] || '').trim()));
+  for(const row of rows) aoa.push(headers.map(h=>(row[h]||'').trim()));
+  const ws=XLSX.utils.aoa_to_sheet(aoa);
+  const cw={'Date':14,'Narration':52,'Cheq./Ref.No.':18,'Value Dt.':14,'Withdrawal Amt.':20,'Deposit Amt.':20,'Closing Balance':22,'Amount':18,'Debit':18,'Credit':18,'Balance':22,'Particulars':45,'Description':45,'Details':40,'Remarks':40,'Ref No.':18,'Reference':18,'Type':12,'Category':14};
+  ws['!cols']=headers.map(h=>({wch:cw[h]||15}));
+  const numSet=new Set(['Withdrawal Amt.','Deposit Amt.','Closing Balance','Amount','Debit','Credit','Balance']);
+  const sr=statementInfo?1:0;
+  if(statementInfo){
+    const c=ws[XLSX.utils.encode_cell({r:0,c:0})];
+    if(c) c.s={font:{bold:true,sz:11,name:'Calibri',color:{rgb:'1A5E35'}},fill:{fgColor:{rgb:'E8F5E9'}},alignment:{horizontal:'left'}};
+    ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:headers.length-1}}];
   }
-
-  const ws = XLSX.utils.aoa_to_sheet(aoa);
-
-  const colWidths = {
-    'Date': 14, 'Narration': 52, 'Cheq./Ref.No.': 18, 'Value Dt.': 14,
-    'Withdrawal Amt.': 20, 'Deposit Amt.': 20, 'Closing Balance': 22,
-    'Amount': 18, 'Debit': 18, 'Credit': 18, 'Balance': 22,
-    'Particulars': 45, 'Description': 45, 'Details': 40, 'Remarks': 40,
-    'Ref No.': 18, 'Reference': 18, 'Type': 12, 'Category': 14,
-    'Sr. No.': 10, 'S.No.': 10, 'Sl No': 10
-  };
-  ws['!cols'] = headers.map(h => ({ wch: colWidths[h] || 15 }));
-
-  const numColSet = new Set(['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance', 'Amount', 'Debit', 'Credit', 'Balance']);
-  const startRow = statementInfo ? 1 : 0;
-
-  // Statement info row styling
-  if (statementInfo) {
-    const cell = ws[XLSX.utils.encode_cell({ r: 0, c: 0 })];
-    if (cell) {
-      cell.s = {
-        font: { bold: true, sz: 11, name: 'Calibri', color: { rgb: '1A5E35' } },
-        fill: { fgColor: { rgb: 'E8F5E9' } },
-        alignment: { horizontal: 'left' }
-      };
-    }
-    // Merge cells for info row
-    ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: headers.length - 1 } }];
+  for(let c=0;c<headers.length;c++){
+    const cell=ws[XLSX.utils.encode_cell({r:sr,c:c})];
+    if(cell) cell.s={font:{bold:true,sz:11,name:'Calibri',color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:'217346'}},alignment:{horizontal:'center',vertical:'center'},border:{top:{style:'thin',color:{rgb:'1A5E35'}},bottom:{style:'thin',color:{rgb:'1A5E35'}},left:{style:'thin',color:{rgb:'1A5E35'}},right:{style:'thin',color:{rgb:'1A5E35'}}}};
   }
-
-  // Header row styling
-  for (let c = 0; c < headers.length; c++) {
-    const cell = ws[XLSX.utils.encode_cell({ r: startRow, c: c })];
-    if (cell) {
-      cell.s = {
-        font: { bold: true, sz: 11, name: 'Calibri', color: { rgb: 'FFFFFF' } },
-        fill: { fgColor: { rgb: '217346' } },
-        alignment: { horizontal: 'center', vertical: 'center' },
-        border: {
-          top: { style: 'thin', color: { rgb: '1A5E35' } },
-          bottom: { style: 'thin', color: { rgb: '1A5E35' } },
-          left: { style: 'thin', color: { rgb: '1A5E35' } },
-          right: { style: 'thin', color: { rgb: '1A5E35' } }
-        }
-      };
-    }
-  }
-
-  // Data row styling
-  for (let r = startRow + 1; r < aoa.length; r++) {
-    for (let c = 0; c < headers.length; c++) {
-      const cell = ws[XLSX.utils.encode_cell({ r, c })];
-      if (cell) {
-        const isNum = numColSet.has(headers[c]);
-        cell.s = {
-          font: { name: 'Calibri', sz: 11 },
-          alignment: {
-            horizontal: isNum ? 'right' : 'left',
-            vertical: 'center',
-            wrapText: headers[c] === 'Narration'
-          },
-          border: {
-            top: { style: 'thin', color: { rgb: 'D4D4D4' } },
-            bottom: { style: 'thin', color: { rgb: 'D4D4D4' } },
-            left: { style: 'thin', color: { rgb: 'D4D4D4' } },
-            right: { style: 'thin', color: { rgb: 'D4D4D4' } }
-          },
-          fill: r % 2 === 0 ? { fgColor: { rgb: 'F3F3F3' } } : { fgColor: { rgb: 'FFFFFF' } }
-        };
+  for(let r=sr+1;r<aoa.length;r++){
+    for(let c=0;c<headers.length;c++){
+      const cell=ws[XLSX.utils.encode_cell({r,c})];
+      if(cell){
+        const isN=numSet.has(headers[c]);
+        cell.s={font:{name:'Calibri',sz:11},alignment:{horizontal:isN?'right':'left',vertical:'center',wrapText:headers[c]==='Narration'},border:{top:{style:'thin',color:{rgb:'D4D4D4'}},bottom:{style:'thin',color:{rgb:'D4D4D4'}},left:{style:'thin',color:{rgb:'D4D4D4'}},right:{style:'thin',color:{rgb:'D4D4D4'}}},fill:r%2===0?{fgColor:{rgb:'F3F3F3'}}:{fgColor:{rgb:'FFFFFF'}}};
       }
     }
   }
-
-  XLSX.utils.book_append_sheet(wb, ws, 'Statement');
-  const fileName = currentFile ? currentFile.name.replace(/\.pdf$/i, '') + '.xlsx' : 'converted_statement.xlsx';
-  XLSX.writeFile(wb, fileName);
+  XLSX.utils.book_append_sheet(wb,ws,'Statement');
+  const fn=currentFile?currentFile.name.replace(/\.pdf$/i,'')+'.xlsx':'converted_statement.xlsx';
+  XLSX.writeFile(wb,fn);
   showToast('Excel file downloaded successfully!');
 }
 
-// ========== Smooth scroll for nav links ==========
-document.querySelectorAll('a[href^="#"]').forEach(link => {
-  link.addEventListener('click', e => {
-    const target = document.querySelector(link.getAttribute('href'));
-    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  });
+document.querySelectorAll('a[href^="#"]').forEach(link=>{
+  link.addEventListener('click',e=>{const t=document.querySelector(link.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}});
 });
-
-// ========== Step line animation ==========
-const stepObserver = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { setTimeout(() => e.target.classList.add('active'), 300); }
-  });
-}, { threshold: 0.3 });
-document.querySelectorAll('.step-line').forEach(el => stepObserver.observe(el));
+const stepObs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)setTimeout(()=>x.target.classList.add('active'),300);}),{threshold:0.3});
+document.querySelectorAll('.step-line').forEach(el=>stepObs.observe(el));
 </script>
 </body>
 </html>
