@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF2XL Pro — Bank Statement to Excel Converter</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { heading: ['Space Grotesk','sans-serif'], body: ['DM Sans','sans-serif'] },
+      colors: {
+        brand: { bg:'#060b0a', card:'#0d1512', fg:'#e0efe8', muted:'#5a7d6d', accent:'#00d67e', warm:'#e8b931', border:'#1a2e24', glow:'#00d67e33' }
+      }
+    }
+  }
+}
+</script>
+<style>
+  :root { --accent:#00d67e; --warm:#e8b931; --bg:#060b0a; --card:#0d1512; --fg:#e0efe8; --muted:#5a7d6d; --border:#1a2e24; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--fg); overflow-x:hidden; }
+  ::selection { background:var(--accent); color:var(--bg); }
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+
+  #heroCanvas { position:absolute; inset:0; z-index:0; }
+
+  .blob { position:absolute; border-radius:50%; filter:blur(100px); opacity:0.15; animation:blobFloat 20s ease-in-out infinite; }
+  .blob-1 { width:500px; height:500px; background:var(--accent); top:-100px; left:-100px; }
+  .blob-2 { width:400px; height:400px; background:var(--warm); bottom:-100px; right:-100px; animation-delay:-7s; animation-duration:25s; }
+  .blob-3 { width:300px; height:300px; background:#00b4d8; top:40%; left:50%; animation-delay:-14s; }
+  @keyframes blobFloat {
+    0%,100% { transform:translate(0,0) scale(1); }
+    25% { transform:translate(60px,-40px) scale(1.1); }
+    50% { transform:translate(-30px,60px) scale(0.95); }
+    75% { transform:translate(40px,20px) scale(1.05); }
+  }
+
+  .upload-wrapper { position:relative; border-radius:20px; padding:2px; }
+  .upload-wrapper::before {
+    content:''; position:absolute; inset:0; border-radius:20px;
+    background:conic-gradient(from 0deg, var(--accent), transparent 30%, transparent 70%, var(--warm), var(--accent));
+    animation:spinBorder 4s linear infinite; opacity:0.8;
+  }
+  .upload-wrapper::after {
+    content:''; position:absolute; inset:2px; border-radius:18px; background:var(--card);
+  }
+  .upload-wrapper > * { position:relative; z-index:1; }
+  @keyframes spinBorder { to { transform:rotate(360deg); } }
+  .upload-wrapper.drag-over::before { opacity:1; filter:brightness(1.5); }
+
+  .reveal { opacity:0; transform:translateY(40px); transition:all 0.8s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  .excel-table { border-collapse:collapse; width:100%; font-size:13px; }
+  .excel-table thead th {
+    background:#217346; color:#fff; font-weight:600; padding:10px 14px;
+    text-align:left; border:1px solid #1a5e35; position:sticky; top:0; z-index:2;
+    font-family:'Space Grotesk',sans-serif; letter-spacing:0.3px; font-size:12.5px;
+  }
+  .excel-table tbody td {
+    padding:8px 14px; border:1px solid #d4d4d4; background:#fff; color:#1a1a1a;
+  }
+  .excel-table tbody tr:nth-child(even) td { background:#f3f3f3; }
+  .excel-table tbody tr:hover td { background:#e8f5e9 !important; }
+  .excel-table .num-cell { text-align:right; font-variant-numeric:tabular-nums; font-family:'Space Grotesk',monospace; }
+
+  .morph-container { position:relative; width:200px; height:200px; margin:0 auto; }
+  .morph-pdf, .morph-xl {
+    position:absolute; width:80px; height:100px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700;
+    transition:all 1.5s cubic-bezier(0.16,1,0.3,1);
+  }
+  .morph-pdf { left:10px; top:50px; background:#ef4444; color:#fff; }
+  .morph-xl { right:10px; top:50px; background:#217346; color:#fff; }
+  .morph-pdf.processing { left:60px; border-radius:50%; width:60px; height:60px; top:70px; background:var(--accent); transform:rotate(360deg); }
+  .morph-xl.processing { right:60px; border-radius:50%; width:60px; height:60px; top:70px; background:var(--accent); transform:rotate(-360deg); }
+  .morph-pdf.done { left:50px; top:50px; background:#217346; color:#fff; border-radius:8px; width:80px; height:100px; transform:rotate(0deg); }
+  .morph-xl.done { right:50px; top:50px; background:#217346; color:#fff; border-radius:8px; width:80px; height:100px; transform:rotate(0deg); }
+
+  .feature-card {
+    background:var(--card); border:1px solid var(--border); border-radius:16px;
+    padding:28px; transition:all 0.4s cubic-bezier(0.16,1,0.3,1); position:relative; overflow:hidden;
+  }
+  .feature-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity:0; transition:opacity 0.4s;
+  }
+  .feature-card:hover { transform:translateY(-4px); border-color:var(--accent); box-shadow:0 20px 60px -15px rgba(0,214,126,0.15); }
+  .feature-card:hover::before { opacity:1; }
+
+  .btn-glow { position:relative; overflow:hidden; transition:all 0.3s; }
+  .btn-glow::after {
+    content:''; position:absolute; inset:-2px; border-radius:inherit;
+    background:linear-gradient(45deg, var(--accent), var(--warm), var(--accent));
+    z-index:-1; opacity:0; filter:blur(12px); transition:opacity 0.3s;
+  }
+  .btn-glow:hover::after { opacity:0.6; }
+  .btn-glow:hover { transform:translateY(-2px); }
+
+  .pulse-ring { animation:pulseRing 2s ease-out infinite; }
+  @keyframes pulseRing {
+    0% { transform:scale(1); opacity:0.6; }
+    100% { transform:scale(2.5); opacity:0; }
+  }
+
+  .step-line { position:absolute; top:28px; left:56px; right:0; height:2px; background:var(--border); }
+  .step-line::after { content:''; position:absolute; inset:0; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 1s ease; }
+  .step-line.active::after { transform:scaleX(1); }
+
+  .toast {
+    position:fixed; bottom:24px; right:24px; z-index:9999; padding:16px 24px;
+    border-radius:12px; font-size:14px; font-weight:500;
+    transform:translateY(100px); opacity:0; transition:all 0.5s cubic-bezier(0.16,1,0.3,1);
+    backdrop-filter:blur(12px);
+  }
+  .toast.show { transform:translateY(0); opacity:1; }
+  .toast.success { background:rgba(0,214,126,0.15); border:1px solid rgba(0,214,126,0.3); color:var(--accent); }
+  .toast.error { background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#ef4444; }
+
+  .stat-num { font-variant-numeric:tabular-nums; }
+
+  /* Developer credit */
+  .dev-credit {
+    display:inline-flex; align-items:center; gap:6px;
+    color:var(--muted); text-decoration:none; font-size:13px;
+    padding:4px 10px 4px 4px; border-radius:20px;
+    border:1px solid var(--border); transition:all 0.35s ease;
+  }
+  .dev-credit:hover {
+    color:var(--accent); border-color:var(--accent);
+    background:rgba(0,214,126,0.06);
+    box-shadow:0 0 20px -5px rgba(0,214,126,0.2);
+  }
+  .dev-credit img {
+    width:24px; height:24px; border-radius:50%;
+    border:1.5px solid var(--border); transition:border-color 0.35s;
+  }
+  .dev-credit:hover img { border-color:var(--accent); }
+  .dev-credit .dev-name { font-weight:600; letter-spacing:0.2px; }
+  .dev-credit .dev-arrow {
+    font-size:10px; opacity:0; transform:translateX(-4px);
+    transition:all 0.35s ease;
+  }
+  .dev-credit:hover .dev-arrow { opacity:1; transform:translateX(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 backdrop-blur-xl bg-brand-bg/70 border-b border-brand-border/50">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-lg bg-brand-accent flex items-center justify-center">
+        <i class="fa-solid fa-file-excel text-brand-bg text-sm"></i>
+      </div>
+      <span class="font-heading font-bold text-lg text-brand-fg">PDF2XL <span class="text-brand-accent">Pro</span></span>
+    </a>
+    <div class="hidden md:flex items-center gap-8 text-sm text-brand-muted">
+      <a href="#features" class="hover:text-brand-fg transition-colors">Features</a>
+      <a href="#converter" class="hover:text-brand-fg transition-colors">Converter</a>
+      <a href="#how-it-works" class="hover:text-brand-fg transition-colors">How It Works</a>
+    </div>
+    <a href="#converter" class="btn-glow bg-brand-accent text-brand-bg px-5 py-2 rounded-lg text-sm font-semibold font-heading">
+      Start Converting
+    </a>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+  <canvas id="heroCanvas"></canvas>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+    <div class="inline-flex items-center gap-2 bg-brand-card/80 border border-brand-border rounded-full px-4 py-1.5 text-xs text-brand-muted mb-8 backdrop-blur-sm">
+      <span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
+      100% Client-Side Processing — Your Files Never Leave Your Device
+    </div>
+    <h1 class="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] mb-6">
+      Convert Bank PDFs<br>
+      <span class="bg-gradient-to-r from-brand-accent via-emerald-300 to-brand-warm bg-clip-text text-transparent">to Perfect Excel</span>
+    </h1>
+    <p class="text-lg sm:text-xl text-brand-muted max-w-2xl mx-auto mb-10 leading-relaxed">
+      HDFC, SBI, ICICI, Axis — any bank statement. Up to 10GB. Single output file. Indian number format preserved. Zero errors, zero uploads.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="#converter" class="btn-glow bg-brand-accent text-brand-bg px-8 py-3.5 rounded-xl text-base font-bold font-heading flex items-center gap-2.5">
+        <i class="fa-solid fa-arrow-up-from-bracket"></i> Upload & Convert
+      </a>
+      <a href="#how-it-works" class="border border-brand-border text-brand-fg px-8 py-3.5 rounded-xl text-base font-medium font-heading hover:border-brand-muted transition-colors flex items-center gap-2.5">
+        <i class="fa-solid fa-play text-xs"></i> See How It Works
+      </a>
+    </div>
+    <div class="flex items-center justify-center gap-8 sm:gap-14 mt-16 text-center">
+      <div>
+        <div class="font-heading text-2xl sm:text-3xl font-bold text-brand-fg stat-num" data-count="10">0</div>
+        <div class="text-xs text-brand-muted mt-1">GB Max Size</div>
+      </div>
+      <div class="w-px h-10 bg-brand-border"></div>
+      <div>
+        <div class="font-heading text-2xl sm:text-3xl font-bold text-brand-accent stat-num" data-count="100">0</div>
+        <div class="text-xs text-brand-muted mt-1">% Accuracy</div>
+      </div>
+      <div class="w-px h-10 bg-brand-border"></div>
+      <div>
+        <div class="font-heading text-2xl sm:text-3xl font-bold text-brand-fg stat-num" data-count="0">0</div>
+        <div class="text-xs text-brand-muted mt-1">Server Uploads</div>
+      </div>
+    </div>
+  </div>
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-brand-muted text-xs animate-bounce">
+    <span>Scroll</span>
+    <i class="fa-solid fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-28 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <h2 class="font-heading text-3xl sm:text-4xl font-bold mb-4">Built for Bank Statements</h2>
+      <p class="text-brand-muted text-lg max-w-xl mx-auto">Every edge case handled — multi-line narrations, Indian number formatting, running balances, page breaks.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="feature-card reveal">
+        <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5">
+          <i class="fa-solid fa-hard-drive text-brand-accent text-lg"></i>
+        </div>
+        <h3 class="font-heading font-semibold text-lg mb-2">10GB File Support</h3>
+        <p class="text-brand-muted text-sm leading-relaxed">Handles massive PDFs with hundreds of pages. Streaming processing prevents memory overload.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5">
+          <i class="fa-solid fa-shield-halved text-brand-accent text-lg"></i>
+        </div>
+        <h3 class="font-heading font-semibold text-lg mb-2">100% Client-Side</h3>
+        <p class="text-brand-muted text-sm leading-relaxed">Your financial data never leaves your browser. No server, no cloud, no risk of data exposure.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5">
+          <i class="fa-solid fa-building-columns text-brand-accent text-lg"></i>
+        </div>
+        <h3 class="font-heading font-semibold text-lg mb-2">Bank-Optimized Parsing</h3>
+        <p class="text-brand-muted text-sm leading-relaxed">Pre-tuned for HDFC, SBI, ICICI, Axis, Kotak and more. Recognizes statement layouts automatically.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5">
+          <i class="fa-solid fa-indian-rupee-sign text-brand-accent text-lg"></i>
+        </div>
+        <h3 class="font-heading font-semibold text-lg mb-2">Indian Number Format</h3>
+        <p class="text-brand-muted text-sm leading-relaxed">Lakhs and crores formatting preserved perfectly — 1,25,000.00 stays exactly as is in Excel.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5">
+          <i class="fa-solid fa-table-cells text-brand-accent text-lg"></i>
+        </div>
+        <h3 class="font-heading font-semibold text-lg mb-2">Single Excel Output</h3>
+        <p class="text-brand-muted text-sm leading-relaxed">Multi-page PDFs merge into one clean worksheet. Proper column widths, headers, and number formatting.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center mb-5">
+          <i class="fa-solid fa-bullseye text-brand-accent text-lg"></i>
+        </div>
+        <h3 class="font-heading font-semibold text-lg mb-2">Zero Data Loss</h3>
+        <p class="text-brand-muted text-sm leading-relaxed">Position-aware parsing ensures every narration, reference number, and balance is captured accurately.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Converter Section -->
+<section id="converter" class="py-28 px-6 relative">
+  <div class="blob blob-1" style="opacity:0.08; top:auto; bottom:0; left:30%;"></div>
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-12 reveal">
+      <h2 class="font-heading text-3xl sm:text-4xl font-bold mb-4">Convert Your Statement</h2>
+      <p class="text-brand-muted text-lg">Drop any bank PDF below and get a perfect Excel file in seconds.</p>
+    </div>
+
+    <!-- State: Upload -->
+    <div id="stateUpload" class="reveal">
+      <div class="upload-wrapper max-w-2xl mx-auto" id="uploadWrapper">
+        <div class="bg-brand-card rounded-[18px] p-10 sm:p-16 text-center cursor-pointer" id="dropZone">
+          <div class="relative inline-block mb-6">
+            <div class="w-20 h-20 rounded-2xl bg-brand-accent/10 flex items-center justify-center">
+              <i class="fa-solid fa-cloud-arrow-up text-brand-accent text-3xl"></i>
+            </div>
+            <div class="absolute inset-0 w-20 h-20 rounded-2xl border-2 border-brand-accent/40 pulse-ring"></div>
+          </div>
+          <h3 class="font-heading text-xl font-semibold mb-2">Drop your bank PDF here</h3>
+          <p class="text-brand-muted text-sm mb-6">or click to browse — supports any bank statement PDF up to 10GB</p>
+          <div class="inline-flex items-center gap-4 text-xs text-brand-muted/60">
+            <span><i class="fa-solid fa-file-pdf mr-1.5"></i>PDF</span>
+            <span class="w-1 h-1 rounded-full bg-brand-muted/30"></span>
+            <span><i class="fa-solid fa-weight-hanging mr-1.5"></i>Up to 10 GB</span>
+            <span class="w-1 h-1 rounded-full bg-brand-muted/30"></span>
+            <span><i class="fa-solid fa-lock mr-1.5"></i>Local Only</span>
+          </div>
+          <input type="file" id="fileInput" accept=".pdf" class="hidden">
+        </div>
+      </div>
+      <div id="fileInfo" class="hidden max-w-2xl mx-auto mt-5 bg-brand-card border border-brand-border rounded-xl p-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+            <i class="fa-solid fa-file-pdf text-red-400"></i>
+          </div>
+          <div>
+            <div class="text-sm font-medium" id="fileName">—</div>
+            <div class="text-xs text-brand-muted" id="fileSize">—</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="btnConvert" class="btn-glow bg-brand-accent text-brand-bg px-6 py-2.5 rounded-lg text-sm font-bold font-heading">
+            Convert to Excel
+          </button>
+          <button id="btnRemove" class="w-9 h-9 rounded-lg border border-brand-border flex items-center justify-center text-brand-muted hover:text-red-400 hover:border-red-400/30 transition-colors">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- State: Processing -->
+    <div id="stateProcessing" class="hidden max-w-2xl mx-auto text-center">
+      <div class="bg-brand-card border border-brand-border rounded-2xl p-10 sm:p-14">
+        <div class="morph-container mb-8">
+          <div class="morph-pdf" id="morphPdf">PDF</div>
+          <div class="morph-xl" id="morphXl">XLS</div>
+        </div>
+        <h3 class="font-heading text-xl font-semibold mb-2" id="processingTitle">Extracting Text...</h3>
+        <p class="text-brand-muted text-sm mb-6" id="processingSubtitle">Reading page 1 of your document</p>
+        <div class="w-full h-2 bg-brand-border rounded-full overflow-hidden mb-4">
+          <div class="h-full bg-gradient-to-r from-brand-accent to-emerald-300 rounded-full transition-all duration-500" id="progressBar" style="width:0%"></div>
+        </div>
+        <div class="flex items-center justify-between text-xs text-brand-muted">
+          <span id="progressPercent">0%</span>
+          <span id="progressDetail">Initializing...</span>
+        </div>
+        <div class="mt-6 text-left bg-brand-bg/50 rounded-lg p-4 max-h-32 overflow-y-auto" id="processLog">
+          <div class="text-xs text-brand-muted font-mono space-y-1" id="logContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- State: Preview -->
+    <div id="statePreview" class="hidden">
+      <div class="bg-brand-card border border-brand-border rounded-xl p-4 mb-5 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-check-circle text-brand-accent"></i>
+            <span class="text-sm font-medium">Conversion Complete</span>
+          </div>
+          <div class="flex items-center gap-4 text-xs text-brand-muted">
+            <span><strong class="text-brand-fg" id="statRows">0</strong> rows</span>
+            <span><strong class="text-brand-fg" id="statPages">0</strong> pages</span>
+            <span><strong class="text-brand-fg" id="statCols">0</strong> columns</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="btnNewFile" class="border border-brand-border text-brand-fg px-4 py-2 rounded-lg text-sm font-medium hover:border-brand-muted transition-colors">
+            <i class="fa-solid fa-plus mr-1.5"></i>New File
+          </button>
+          <button id="btnDownload" class="btn-glow bg-brand-accent text-brand-bg px-6 py-2.5 rounded-lg text-sm font-bold font-heading">
+            <i class="fa-solid fa-download mr-1.5"></i>Download Excel
+          </button>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl overflow-hidden shadow-2xl shadow-black/20">
+        <div class="overflow-auto max-h-[500px]">
+          <table class="excel-table" id="previewTable">
+            <thead><tr id="tableHead"></tr></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="mt-4 text-center">
+        <button id="btnRawText" class="text-xs text-brand-muted hover:text-brand-fg transition-colors">
+          <i class="fa-solid fa-code mr-1"></i>View Raw Extracted Text
+        </button>
+      </div>
+      <div id="rawTextPanel" class="hidden mt-4 bg-brand-card border border-brand-border rounded-xl p-5 max-h-64 overflow-auto">
+        <pre class="text-xs text-brand-muted font-mono whitespace-pre-wrap" id="rawTextContent"></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section id="how-it-works" class="py-28 px-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <h2 class="font-heading text-3xl sm:text-4xl font-bold mb-4">Three Steps. Perfect Output.</h2>
+      <p class="text-brand-muted text-lg">No sign-up, no upload, no waiting. It all happens in your browser.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="reveal text-center relative">
+        <div class="hidden md:block step-line" id="stepLine1"></div>
+        <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center mx-auto mb-5 font-heading font-bold text-brand-accent text-lg">1</div>
+        <h3 class="font-heading font-semibold text-lg mb-2">Upload PDF</h3>
+        <p class="text-brand-muted text-sm leading-relaxed">Drag and drop your bank statement PDF. Supports HDFC, SBI, ICICI, Axis, and all major Indian banks.</p>
+      </div>
+      <div class="reveal text-center relative" style="transition-delay:0.15s">
+        <div class="hidden md:block step-line" id="stepLine2"></div>
+        <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center mx-auto mb-5 font-heading font-bold text-brand-accent text-lg">2</div>
+        <h3 class="font-heading font-semibold text-lg mb-2">Auto-Convert</h3>
+        <p class="text-brand-muted text-sm leading-relaxed">PDF.js extracts text with precise coordinates. Our parser identifies columns, narrations, and amounts by position.</p>
+      </div>
+      <div class="reveal text-center" style="transition-delay:0.3s">
+        <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center mx-auto mb-5 font-heading font-bold text-brand-accent text-lg">3</div>
+        <h3 class="font-heading font-semibold text-lg mb-2">Download Excel</h3>
+        <p class="text-brand-muted text-sm leading-relaxed">Preview the extracted data in a table, verify accuracy, then download a clean .xlsx file with proper formatting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Supported Banks -->
+<section class="py-20 px-6 border-t border-brand-border/30">
+  <div class="max-w-5xl mx-auto text-center reveal">
+    <h3 class="font-heading text-lg font-semibold text-brand-muted mb-8">Optimized For All Major Banks</h3>
+    <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-sm text-brand-muted/70">
+      <span class="hover:text-brand-fg transition-colors">HDFC Bank</span>
+      <span class="hover:text-brand-fg transition-colors">State Bank of India</span>
+      <span class="hover:text-brand-fg transition-colors">ICICI Bank</span>
+      <span class="hover:text-brand-fg transition-colors">Axis Bank</span>
+      <span class="hover:text-brand-fg transition-colors">Kotak Mahindra</span>
+      <span class="hover:text-brand-fg transition-colors">Punjab National Bank</span>
+      <span class="hover:text-brand-fg transition-colors">Bank of Baroda</span>
+      <span class="hover:text-brand-fg transition-colors">Canara Bank</span>
+      <span class="hover:text-brand-fg transition-colors">Union Bank</span>
+      <span class="hover:text-brand-fg transition-colors">IndusInd Bank</span>
+      <span class="hover:text-brand-fg transition-colors">Yes Bank</span>
+      <span class="hover:text-brand-fg transition-colors">Federal Bank</span>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="border-t border-brand-border/30 py-10 px-6">
+  <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2 text-sm text-brand-muted">
+      <div class="w-6 h-6 rounded bg-brand-accent flex items-center justify-center">
+        <i class="fa-solid fa-file-excel text-brand-bg text-[10px]"></i>
+      </div>
+      <span>PDF2XL Pro</span>
+      <span class="text-brand-border">|</span>
+      <span>Client-side only. No data leaves your device.</span>
+    </div>
+
+    <!-- Developer Credit -->
+    <a href="https://gravatar.com/katragaddasurendra" target="_blank" rel="noopener noreferrer" class="dev-credit" aria-label="Developer profile: katragadaa_surendra">
+      <img src="https://gravatar.com/avatar/katragaddasurendra?d=identicon&s=48" alt="katragadaa_surendra" width="24" height="24">
+      <span class="dev-name">katragadaa_surendra</span>
+      <i class="fa-solid fa-arrow-up-right-from-square dev-arrow"></i>
+    </a>
+  </div>
+  <div class="max-w-7xl mx-auto mt-4 text-center">
+    <div class="text-xs text-brand-muted/40">Built with PDF.js + SheetJS. No server required.</div>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== PDF.js Worker Setup ==========
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ========== Particle System ==========
+(function initParticles() {
+  const canvas = document.getElementById('heroCanvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let mouse = { x: -1000, y: -1000 };
+  let w, h;
+
+  function resize() {
+    w = canvas.width = canvas.parentElement.offsetWidth;
+    h = canvas.height = canvas.parentElement.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  canvas.parentElement.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+
+  const PARTICLE_COUNT = Math.min(80, Math.floor(window.innerWidth / 18));
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    particles.push({
+      x: Math.random() * 2000, y: Math.random() * 1200,
+      vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+      r: Math.random() * 2 + 0.5,
+      alpha: Math.random() * 0.5 + 0.2
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 150) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(0,214,126,${0.08 * (1 - dist / 150)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+      const mdx = particles[i].x - mouse.x;
+      const mdy = particles[i].y - mouse.y;
+      const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+      if (mDist < 200) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = `rgba(0,214,126,${0.15 * (1 - mDist / 200)})`;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+    }
+    for (const p of particles) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,214,126,${p.alpha})`;
+      ctx.fill();
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ========== Scroll Reveal ==========
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ========== Stat Counter Animation ==========
+const statObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const target = parseInt(el.dataset.count);
+      let current = 0;
+      const step = Math.max(1, Math.ceil(target / 40));
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = current;
+      }, 30);
+      statObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-num').forEach(el => statObserver.observe(el));
+
+// ========== Toast ==========
+function showToast(msg, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = `toast ${type} show`;
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+// ========== File Handling ==========
+let currentFile = null;
+let convertedData = null;
+let convertedHeaders = null;
+let rawTextLines = [];
+
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const uploadWrapper = document.getElementById('uploadWrapper');
+const fileInfo = document.getElementById('fileInfo');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); uploadWrapper.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => uploadWrapper.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadWrapper.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) handleFile(file);
+});
+fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+function handleFile(file) {
+  if (file.type !== 'application/pdf') {
+    showToast('Please upload a PDF file.', 'error');
+    return;
+  }
+  currentFile = file;
+  document.getElementById('fileName').textContent = file.name;
+  document.getElementById('fileSize').textContent = formatSize(file.size);
+  fileInfo.classList.remove('hidden');
+  dropZone.style.opacity = '0.5';
+  dropZone.style.pointerEvents = 'none';
+}
+
+document.getElementById('btnRemove').addEventListener('click', () => {
+  currentFile = null;
+  fileInput.value = '';
+  fileInfo.classList.add('hidden');
+  dropZone.style.opacity = '1';
+  dropZone.style.pointerEvents = 'auto';
+});
+
+document.getElementById('btnConvert').addEventListener('click', () => {
+  if (currentFile) startConversion(currentFile);
+});
+
+document.getElementById('btnNewFile').addEventListener('click', () => {
+  showState('upload');
+  currentFile = null;
+  convertedData = null;
+  convertedHeaders = null;
+  fileInput.value = '';
+  fileInfo.classList.add('hidden');
+  dropZone.style.opacity = '1';
+  dropZone.style.pointerEvents = 'auto';
+});
+
+document.getElementById('btnDownload').addEventListener('click', () => {
+  if (convertedData && convertedHeaders) downloadExcel(convertedHeaders, convertedData);
+});
+
+document.getElementById('btnRawText').addEventListener('click', () => {
+  document.getElementById('rawTextPanel').classList.toggle('hidden');
+});
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+  if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + ' MB';
+  return (bytes / 1073741824).toFixed(2) + ' GB';
+}
+
+// ========== State Management ==========
+function showState(state) {
+  document.getElementById('stateUpload').classList.toggle('hidden', state !== 'upload');
+  document.getElementById('stateProcessing').classList.toggle('hidden', state !== 'processing');
+  document.getElementById('statePreview').classList.toggle('hidden', state !== 'preview');
+}
+
+// ========== Processing ==========
+function updateProgress(pct, title, subtitle, detail) {
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressPercent').textContent = pct + '%';
+  if (title) document.getElementById('processingTitle').textContent = title;
+  if (subtitle) document.getElementById('processingSubtitle').textContent = subtitle;
+  if (detail) document.getElementById('progressDetail').textContent = detail;
+}
+
+function addLog(msg) {
+  const log = document.getElementById('logContent');
+  const line = document.createElement('div');
+  const now = new Date();
+  const ts = now.toLocaleTimeString('en-US', { hour12: false, hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  line.textContent = `[${ts}] ${msg}`;
+  log.appendChild(line);
+  log.parentElement.scrollTop = log.parentElement.scrollHeight;
+}
+
+async function startConversion(file) {
+  showState('processing');
+  const morphPdf = document.getElementById('morphPdf');
+  const morphXl = document.getElementById('morphXl');
+  morphPdf.classList.remove('done'); morphXl.classList.remove('done');
+  morphPdf.classList.add('processing'); morphXl.classList.add('processing');
+  document.getElementById('logContent').innerHTML = '';
+
+  try {
+    updateProgress(5, 'Loading PDF...', 'Reading file into memory', 'Initializing PDF.js');
+    addLog('Loading PDF file: ' + file.name + ' (' + formatSize(file.size) + ')');
+
+    const arrayBuffer = await file.arrayBuffer();
+    updateProgress(10, 'Loading PDF...', 'Parsing document structure', 'PDF.js initializing');
+    addLog('File loaded into memory, parsing PDF structure...');
+
+    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+    const pdf = await loadingTask.promise;
+    const totalPages = pdf.numPages;
+    addLog(`PDF loaded: ${totalPages} page(s) detected`);
+    updateProgress(15, 'Extracting Text...', `Processing page 1 of ${totalPages}`, 'Text extraction started');
+
+    const allItems = [];
+    rawTextLines = [];
+
+    for (let i = 1; i <= totalPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const viewport = page.getViewport({ scale: 1 });
+
+      for (const item of textContent.items) {
+        if (item.str && item.str.trim()) {
+          const [, , , scaleY, tx, ty] = item.transform;
+          allItems.push({
+            text: item.str,
+            x: tx,
+            y: viewport.height - ty,
+            width: item.width,
+            height: Math.abs(item.height * scaleY),
+            page: i
+          });
+        }
+      }
+
+      const pct = 15 + Math.floor((i / totalPages) * 50);
+      updateProgress(pct, 'Extracting Text...', `Processing page ${i} of ${totalPages}`, `${allItems.length} text items extracted`);
+      if (i % 5 === 0 || i === totalPages) addLog(`Page ${i}/${totalPages} extracted — ${allItems.length} text items total`);
+      await new Promise(r => setTimeout(r, 10));
+    }
+    addLog(`Text extraction complete: ${allItems.length} text items from ${totalPages} pages`);
+
+    updateProgress(68, 'Parsing Table...', 'Identifying columns and rows', 'Position-based analysis');
+    addLog('Starting position-based table parsing...');
+    await new Promise(r => setTimeout(r, 100));
+
+    const { headers, rows, rawLines } = parseBankStatement(allItems);
+    rawTextLines = rawLines;
+
+    updateProgress(85, 'Generating Excel...', 'Creating spreadsheet structure', `${rows.length} data rows identified`);
+    addLog(`Parsing complete: ${headers.length} columns, ${rows.length} data rows`);
+
+    if (rows.length === 0) {
+      addLog('WARNING: No table rows detected. Trying fallback regex parser...');
+      updateProgress(80, 'Trying Fallback Parser...', 'Regex-based extraction', 'Alternative method');
+      await new Promise(r => setTimeout(r, 200));
+      const fallback = parseFallback(allItems);
+      if (fallback.rows.length > 0) {
+        headers.length = 0; headers.push(...fallback.headers);
+        rows.length = 0; rows.push(...fallback.rows);
+        addLog(`Fallback parser found ${rows.length} rows`);
+      }
+    }
+
+    if (rows.length === 0) {
+      throw new Error('Could not detect a bank statement table in this PDF. Please ensure the PDF contains a transaction table.');
+    }
+
+    updateProgress(92, 'Building Preview...', 'Rendering data table', 'Almost done');
+    await new Promise(r => setTimeout(r, 200));
+
+    convertedHeaders = headers;
+    convertedData = rows;
+
+    renderPreview(headers, rows);
+    document.getElementById('rawTextContent').textContent = rawTextLines.join('\n');
+
+    updateProgress(100, 'Conversion Complete', `${rows.length} rows extracted from ${totalPages} pages`, 'Ready to download');
+    addLog('Conversion complete! Excel file ready for download.');
+
+    morphPdf.classList.remove('processing');
+    morphXl.classList.remove('processing');
+    morphPdf.classList.add('done');
+    morphXl.classList.add('done');
+
+    await new Promise(r => setTimeout(r, 800));
+    showState('preview');
+    showToast(`Successfully converted ${rows.length} transactions to Excel.`);
+
+  } catch (err) {
+    addLog('ERROR: ' + err.message);
+    showToast(err.message, 'error');
+    setTimeout(() => showState('upload'), 2000);
+  }
+}
+
+// ========== Bank Statement Parser ==========
+function parseBankStatement(items) {
+  const lines = groupByLine(items, 3);
+  const rawLines = lines.map(l => l.items.map(it => it.text).join(' '));
+
+  const headerIdx = findHeaderRow(lines);
+  if (headerIdx === -1) return { headers: [], rows: [], rawLines };
+
+  const columns = getColumnsFromHeader(lines[headerIdx]);
+  if (columns.length < 2) return { headers: [], rows: [], rawLines };
+
+  const headers = columns.map(c => c.name);
+  const rows = [];
+  for (let i = headerIdx + 1; i < lines.length; i++) {
+    const row = parseDataRow(lines[i], columns);
+    if (row) rows.push(row);
+  }
+
+  return { headers, rows, rawLines };
+}
+
+function groupByLine(items, tolerance) {
+  items.sort((a, b) => b.y - a.y || a.x - b.x);
+  const lines = [];
+  if (items.length === 0) return lines;
+
+  let currentLine = { y: items[0].y, items: [items[0]] };
+  for (let i = 1; i < items.length; i++) {
+    if (Math.abs(items[i].y - currentLine.y) < tolerance) {
+      currentLine.items.push(items[i]);
+    } else {
+      currentLine.items.sort((a, b) => a.x - b.x);
+      lines.push(currentLine);
+      currentLine = { y: items[i].y, items: [items[i]] };
+    }
+  }
+  currentLine.items.sort((a, b) => a.x - b.x);
+  lines.push(currentLine);
+  return lines;
+}
+
+function findHeaderRow(lines) {
+  const keywords = ['date', 'narration', 'withdrawal', 'deposit', 'closing', 'balance', 'cheq', 'ref', 'value'];
+  let bestIdx = -1, bestScore = 0;
+
+  for (let i = 0; i < Math.min(lines.length, 50); i++) {
+    const text = lines[i].items.map(it => it.text).join(' ').toLowerCase();
+    let score = 0;
+    for (const kw of keywords) { if (text.includes(kw)) score++; }
+    if (lines[i].items.length >= 4) score += 1;
+    if (score > bestScore) { bestScore = score; bestIdx = i; }
+  }
+
+  return bestScore >= 3 ? bestIdx : -1;
+}
+
+function getColumnsFromHeader(headerLine) {
+  const items = headerLine.items;
+  const columns = [];
+
+  const mapping = {
+    'date': 'Date', 'narrat': 'Narration', 'cheq': 'Cheq./Ref.No.', 'ref.': 'Cheq./Ref.No.',
+    'ref': 'Cheq./Ref.No.', 'value': 'Value Dt.', 'withdraw': 'Withdrawal Amt.',
+    'deposit': 'Deposit Amt.', 'closing': 'Closing Balance', 'balance': 'Closing Balance'
+  };
+
+  for (let i = 0; i < items.length; i++) {
+    const text = items[i].text.trim().toLowerCase();
+    let colName = null;
+
+    if (text.includes('value')) {
+      colName = 'Value Dt.';
+    } else {
+      for (const [key, name] of Object.entries(mapping)) {
+        if (text.includes(key) && name !== 'Value Dt.') { colName = name; break; }
+      }
+      if (!colName && text.includes('balance')) colName = 'Closing Balance';
+    }
+
+    if (colName) {
+      if (!columns.find(c => c.name === colName)) {
+        columns.push({
+          name: colName,
+          x: items[i].x,
+          endX: i < items.length - 1 ? items[i + 1].x : items[i].x + 300,
+          width: items[i].width
+        });
+      }
+    }
+  }
+
+  for (let i = 0; i < columns.length; i++) {
+    columns[i].endX = i < columns.length - 1 ? columns[i + 1].x : columns[i].x + 300;
+  }
+
+  return columns;
+}
+
+function parseDataRow(line, columns) {
+  const lineItems = line.items;
+  if (lineItems.length === 0) return null;
+
+  const row = {};
+  for (let c = 0; c < columns.length; c++) {
+    const col = columns[c];
+    const matching = lineItems.filter(it => it.x >= col.x - 5 && it.x < col.endX + 5);
+    let value = matching.map(it => it.text).join(' ').trim().replace(/\s+/g, ' ');
+    row[col.name] = value;
+  }
+
+  const dateVal = (row['Date'] || '').trim();
+  const hasDate = /^\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}$/.test(dateVal);
+
+  const amtFields = ['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance'];
+  let hasAmount = false;
+  for (const f of amtFields) {
+    const v = (row[f] || '').trim();
+    if (/^[\d,]+\.\d{2}$/.test(v) && parseFloat(v.replace(/,/g, '')) > 0) { hasAmount = true; break; }
+  }
+
+  if (!hasDate && !hasAmount) return null;
+
+  const narration = (row['Narration'] || '').toLowerCase();
+  const combined = Object.values(row).join(' ').toLowerCase();
+  if (narration.match(/^(total|opening\s*balance|closing\s*balance|page\s*\d|continued)/)) return null;
+  if (combined.includes('statement of account') || combined.includes('account statement')) return null;
+
+  return row;
+}
+
+// ========== Fallback Regex Parser ==========
+function parseFallback(items) {
+  const lines = groupByLine(items, 3);
+  const rawLines = lines.map(l => l.items.map(it => it.text).join(' '));
+
+  const headers = ['Date', 'Narration', 'Cheq./Ref.No.', 'Value Dt.', 'Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance'];
+  const rows = [];
+  const dateRegex = /^(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})\s+(.+)/;
+
+  for (const rawLine of rawLines) {
+    const m = rawLine.match(dateRegex);
+    if (!m) continue;
+
+    const date = m[1];
+    const rest = m[2].trim();
+    const amtRegex = /([\d,]+\.\d{2})/g;
+    const amounts = [];
+    let am;
+    while ((am = amtRegex.exec(rest)) !== null) amounts.push(am);
+    if (amounts.length === 0) continue;
+
+    const firstAmtIdx = rest.indexOf(amounts[0][1]);
+    const narrationPart = rest.substring(0, firstAmtIdx).trim();
+
+    let narration = narrationPart;
+    let refNo = '';
+    let valueDt = '';
+    const refMatch = narrationPart.match(/\s+(\d{6,12})\s*$/);
+    if (refMatch) { refNo = refMatch[1]; narration = narrationPart.substring(0, narrationPart.lastIndexOf(refNo)).trim(); }
+    const dtMatch = narration.match(/(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})\s*$/);
+    if (dtMatch) { valueDt = dtMatch[1]; narration = narration.substring(0, narration.lastIndexOf(dtMatch[1])).trim(); }
+
+    let withdrawal = '', deposit = '', balance = '';
+    if (amounts.length >= 1) balance = amounts[amounts.length - 1][1];
+    if (amounts.length >= 2) deposit = amounts[amounts.length - 2][1];
+    if (amounts.length >= 3) {
+      const narrLower = narration.toLowerCase();
+      if (narrLower.includes('withdraw') || narrLower.includes('neft') || narrLower.includes('rtgs') || narrLower.includes('transfer') || narrLower.includes('payment') || narrLower.includes('debit')) {
+        withdrawal = amounts[amounts.length - 2][1];
+        deposit = amounts[amounts.length - 3][1];
+      } else {
+        withdrawal = amounts[amounts.length - 3][1];
+      }
+    }
+
+    if (narration.toLowerCase().match(/^(total|opening|closing|page)/)) continue;
+    rows.push({ Date: date, Narration: narration, 'Cheq./Ref.No.': refNo, 'Value Dt.': valueDt, 'Withdrawal Amt.': withdrawal, 'Deposit Amt.': deposit, 'Closing Balance': balance });
+  }
+
+  return { headers, rows };
+}
+
+// ========== Render Preview ==========
+function renderPreview(headers, rows) {
+  const thead = document.getElementById('tableHead');
+  const tbody = document.getElementById('tableBody');
+  thead.innerHTML = '';
+  tbody.innerHTML = '';
+
+  for (const h of headers) {
+    const th = document.createElement('th');
+    th.textContent = h;
+    thead.appendChild(th);
+  }
+
+  const previewRows = rows.slice(0, 200);
+  const numCols = new Set(['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance']);
+
+  for (let i = 0; i < previewRows.length; i++) {
+    const tr = document.createElement('tr');
+    tr.style.opacity = '0';
+    tr.style.transform = 'translateY(8px)';
+    tr.style.transition = `all 0.3s ease ${i * 15}ms`;
+
+    for (const h of headers) {
+      const td = document.createElement('td');
+      const val = (rows[i][h] || '').trim();
+      td.textContent = val || '—';
+      if (numCols.has(h)) td.classList.add('num-cell');
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        tr.style.opacity = '1';
+        tr.style.transform = 'translateY(0)';
+      });
+    });
+  }
+
+  if (rows.length > 200) {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.colSpan = headers.length;
+    td.className = 'text-center text-gray-400 py-4';
+    td.textContent = `Showing 200 of ${rows.length} rows. Download Excel for full data.`;
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  }
+
+  document.getElementById('statRows').textContent = rows.length;
+  document.getElementById('statCols').textContent = headers.length;
+}
+
+// ========== Download Excel ==========
+function downloadExcel(headers, rows) {
+  const wb = XLSX.utils.book_new();
+  const aoa = [headers];
+  for (const row of rows) { aoa.push(headers.map(h => (row[h] || '').trim())); }
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+
+  const colWidths = {
+    'Date': 14, 'Narration': 50, 'Cheq./Ref.No.': 18, 'Value Dt.': 14,
+    'Withdrawal Amt.': 20, 'Deposit Amt.': 20, 'Closing Balance': 22
+  };
+  ws['!cols'] = headers.map(h => ({ wch: colWidths[h] || 15 }));
+
+  for (let c = 0; c < headers.length; c++) {
+    const cell = ws[XLSX.utils.encode_cell({ r: 0, c: c })];
+    if (cell) {
+      cell.s = {
+        font: { bold: true, color: { rgb: 'FFFFFF' } },
+        fill: { fgColor: { rgb: '217346' } },
+        alignment: { horizontal: 'center' },
+        border: {
+          top: { style: 'thin', color: { rgb: '1A5E35' } },
+          bottom: { style: 'thin', color: { rgb: '1A5E35' } },
+          left: { style: 'thin', color: { rgb: '1A5E35' } },
+          right: { style: 'thin', color: { rgb: '1A5E35' } }
+        }
+      };
+    }
+  }
+
+  const numCols = new Set(['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance']);
+  for (let r = 1; r <= rows.length; r++) {
+    for (let c = 0; c < headers.length; c++) {
+      const cell = ws[XLSX.utils.encode_cell({ r, c })];
+      if (cell) {
+        const isNum = numCols.has(headers[c]);
+        cell.s = {
+          font: { name: 'Calibri', sz: 11 },
+          alignment: { horizontal: isNum ? 'right' : 'left' },
+          border: {
+            top: { style: 'thin', color: { rgb: 'D4D4D4' } },
+            bottom: { style: 'thin', color: { rgb: 'D4D4D4' } },
+            left: { style: 'thin', color: { rgb: 'D4D4D4' } },
+            right: { style: 'thin', color: { rgb: 'D4D4D4' } }
+          },
+          fill: r % 2 === 0 ? { fgColor: { rgb: 'F3F3F3' } } : { fgColor: { rgb: 'FFFFFF' } }
+        };
+      }
+    }
+  }
+
+  XLSX.utils.book_append_sheet(wb, ws, 'Statement');
+  const fileName = currentFile ? currentFile.name.replace(/\.pdf$/i, '') + '.xlsx' : 'converted_statement.xlsx';
+  XLSX.writeFile(wb, fileName);
+  showToast('Excel file downloaded successfully!');
+}
+
+// ========== Smooth scroll for nav links ==========
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+
+// ========== Step line animation ==========
+const stepObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { setTimeout(() => e.target.classList.add('active'), 300); }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.step-line').forEach(el => stepObserver.observe(el));
+</script>
+</body>
+</html>
