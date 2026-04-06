@@ -60,18 +60,165 @@ tailwind.config = {
   .reveal { opacity:0; transform:translateY(40px); transition:all 0.8s cubic-bezier(0.16,1,0.3,1); }
   .reveal.visible { opacity:1; transform:translateY(0); }
 
-  .excel-table { border-collapse:collapse; width:100%; font-size:13px; }
-  .excel-table thead th {
-    background:#217346; color:#fff; font-weight:600; padding:10px 14px;
-    text-align:left; border:1px solid #1a5e35; position:sticky; top:0; z-index:2;
-    font-family:'Space Grotesk',sans-serif; letter-spacing:0.3px; font-size:12.5px;
+  /* ===== Excel-Like Preview ===== */
+  .excel-frame {
+    background:#f3f3f3;
+    border-radius:6px;
+    overflow:hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04);
   }
-  .excel-table tbody td {
-    padding:8px 14px; border:1px solid #d4d4d4; background:#fff; color:#1a1a1a;
+  .excel-titlebar {
+    background:#217346;
+    padding:6px 14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
   }
-  .excel-table tbody tr:nth-child(even) td { background:#f3f3f3; }
-  .excel-table tbody tr:hover td { background:#e8f5e9 !important; }
-  .excel-table .num-cell { text-align:right; font-variant-numeric:tabular-nums; font-family:'Space Grotesk',monospace; }
+  .excel-titlebar .tab {
+    background:rgba(255,255,255,0.18);
+    color:#fff;
+    padding:3px 16px;
+    border-radius:3px 3px 0 0;
+    font-size:12px;
+    font-family:'Calibri','Segoe UI',sans-serif;
+    font-weight:500;
+  }
+  .excel-titlebar .filename {
+    color:rgba(255,255,255,0.8);
+    font-size:12px;
+    font-family:'Calibri','Segoe UI',sans-serif;
+  }
+  .excel-formula-bar {
+    background:#fff;
+    border-bottom:1px solid #d4d4d4;
+    padding:4px 8px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-family:'Calibri','Segoe UI',sans-serif;
+  }
+  .excel-formula-bar .cell-ref {
+    background:#f3f3f3;
+    border:1px solid #c6c6c6;
+    padding:2px 8px;
+    font-size:11px;
+    color:#333;
+    min-width:50px;
+    text-align:center;
+    border-radius:2px;
+  }
+  .excel-formula-bar .fx {
+    font-size:12px;
+    color:#333;
+    font-style:italic;
+    font-weight:600;
+    min-width:20px;
+  }
+  .excel-formula-bar .formula-text {
+    flex:1;
+    border:1px solid #c6c6c6;
+    padding:2px 6px;
+    font-size:11px;
+    color:#333;
+    border-radius:2px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .excel-grid-wrap {
+    overflow:auto;
+    max-height:520px;
+    position:relative;
+  }
+  .excel-grid {
+    border-collapse:collapse;
+    width:100%;
+    font-family:'Calibri','Segoe UI',sans-serif;
+    font-size:11.5px;
+    color:#000;
+  }
+  .excel-grid .col-header-row th {
+    background:#f8f8f8;
+    border:1px solid #c6c6c6;
+    padding:3px 6px;
+    font-weight:500;
+    color:#333;
+    text-align:center;
+    font-size:11px;
+    position:sticky;
+    top:0;
+    z-index:4;
+    min-width:40px;
+    background-clip:padding-box;
+  }
+  .excel-grid .col-header-row th:first-child {
+    position:sticky;
+    left:0;
+    z-index:6;
+    min-width:36px;
+    width:36px;
+    background:#f8f8f8;
+  }
+  .excel-grid .data-row-header {
+    background:#f8f8f8;
+    border:1px solid #c6c6c6;
+    padding:1px 6px;
+    text-align:center;
+    font-size:11px;
+    color:#333;
+    position:sticky;
+    left:0;
+    z-index:2;
+    width:36px;
+    min-width:36px;
+  }
+  .excel-grid .statement-header td {
+    background:#217346;
+    color:#fff;
+    font-weight:600;
+    padding:8px 10px;
+    border:1px solid #196b3b;
+    text-align:left;
+    font-size:12px;
+    letter-spacing:0.2px;
+    white-space:nowrap;
+  }
+  .excel-grid .info-row td {
+    background:#e8f5e9;
+    padding:5px 10px;
+    border:1px solid #c6c6c6;
+    font-size:11px;
+    color:#1a5e35;
+    font-weight:500;
+  }
+  .excel-grid .data-cell {
+    padding:4px 10px;
+    border:1px solid #d4d4d4;
+    background:#fff;
+    color:#000;
+    line-height:1.4;
+  }
+  .excel-grid .data-cell.narration {
+    white-space:normal;
+    min-width:260px;
+    max-width:380px;
+    word-wrap:break-word;
+  }
+  .excel-grid .data-cell.num-cell {
+    text-align:right;
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap;
+  }
+  .excel-grid .data-cell.date-cell {
+    white-space:nowrap;
+    text-align:center;
+  }
+  .excel-grid .data-cell.ref-cell {
+    text-align:center;
+    white-space:nowrap;
+    font-size:11px;
+    color:#444;
+  }
 
   .morph-container { position:relative; width:200px; height:200px; margin:0 auto; }
   .morph-pdf, .morph-xl {
@@ -283,7 +430,7 @@ tailwind.config = {
 <!-- Converter Section -->
 <section id="converter" class="py-28 px-6 relative">
   <div class="blob blob-1" style="opacity:0.08; top:auto; bottom:0; left:30%;"></div>
-  <div class="max-w-5xl mx-auto">
+  <div class="max-w-6xl mx-auto">
     <div class="text-center mb-12 reveal">
       <h2 class="font-heading text-3xl sm:text-4xl font-bold mb-4">Convert Your Statement</h2>
       <p class="text-brand-muted text-lg">Drop any bank PDF below and get a perfect Excel file in seconds.</p>
@@ -369,6 +516,9 @@ tailwind.config = {
           </div>
         </div>
         <div class="flex items-center gap-3">
+          <button id="btnRawText" class="border border-brand-border text-brand-fg px-4 py-2 rounded-lg text-sm font-medium hover:border-brand-muted transition-colors">
+            <i class="fa-solid fa-code mr-1.5"></i>Raw Text
+          </button>
           <button id="btnNewFile" class="border border-brand-border text-brand-fg px-4 py-2 rounded-lg text-sm font-medium hover:border-brand-muted transition-colors">
             <i class="fa-solid fa-plus mr-1.5"></i>New File
           </button>
@@ -377,18 +527,21 @@ tailwind.config = {
           </button>
         </div>
       </div>
-      <div class="bg-white rounded-xl overflow-hidden shadow-2xl shadow-black/20">
-        <div class="overflow-auto max-h-[500px]">
-          <table class="excel-table" id="previewTable">
-            <thead><tr id="tableHead"></tr></thead>
-            <tbody id="tableBody"></tbody>
-          </table>
+      <!-- Excel-like frame -->
+      <div class="excel-frame" id="excelFrame">
+        <div class="excel-titlebar">
+          <i class="fa-solid fa-file-excel text-white text-sm"></i>
+          <span class="tab" id="excelTab">Statement</span>
+          <span class="filename" id="excelFilename">converted_statement.xlsx</span>
         </div>
-      </div>
-      <div class="mt-4 text-center">
-        <button id="btnRawText" class="text-xs text-brand-muted hover:text-brand-fg transition-colors">
-          <i class="fa-solid fa-code mr-1"></i>View Raw Extracted Text
-        </button>
+        <div class="excel-formula-bar">
+          <span class="cell-ref" id="formulaRef">A1</span>
+          <span class="fx">fx</span>
+          <span class="formula-text" id="formulaText">Date</span>
+        </div>
+        <div class="excel-grid-wrap" id="excelGridWrap">
+          <table class="excel-grid" id="excelGrid"></table>
+        </div>
       </div>
       <div id="rawTextPanel" class="hidden mt-4 bg-brand-card border border-brand-border rounded-xl p-5 max-h-64 overflow-auto">
         <pre class="text-xs text-brand-muted font-mono whitespace-pre-wrap" id="rawTextContent"></pre>
@@ -459,11 +612,7 @@ tailwind.config = {
       <span>Client-side only. No data leaves your device.</span>
     </div>
     <a href="https://gravatar.com/katragaddasurendra" target="_blank" rel="noopener noreferrer" class="footer-credit" aria-label="Developer: katragadaa_surendra">
-      <img
-        src="https://ui-avatars.com/api/?name=KS&background=0d1512&color=00d67e&size=48&rounded=true&bold=true"
-        alt="Dev"
-        width="24" height="24"
-      >
+      <img src="https://ui-avatars.com/api/?name=KS&background=0d1512&color=00d67e&size=48&rounded=true&bold=true" alt="Dev" width="24" height="24">
       <span class="font-semibold" style="letter-spacing:0.2px">katragadaa_surendra</span>
       <i class="fa-solid fa-arrow-up-right-from-square dev-arrow"></i>
     </a>
@@ -487,30 +636,25 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   let particles = [];
   let mouse = { x: -1000, y: -1000 };
   let w, h;
-
   function resize() {
     w = canvas.width = canvas.parentElement.offsetWidth;
     h = canvas.height = canvas.parentElement.offsetHeight;
   }
   resize();
   window.addEventListener('resize', resize);
-
   canvas.parentElement.addEventListener('mousemove', e => {
     const rect = canvas.getBoundingClientRect();
     mouse.x = e.clientX - rect.left;
     mouse.y = e.clientY - rect.top;
   });
-
   const PARTICLE_COUNT = Math.min(80, Math.floor(window.innerWidth / 18));
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     particles.push({
       x: Math.random() * 2000, y: Math.random() * 1200,
       vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
-      r: Math.random() * 2 + 0.5,
-      alpha: Math.random() * 0.5 + 0.2
+      r: Math.random() * 2 + 0.5, alpha: Math.random() * 0.5 + 0.2
     });
   }
-
   function draw() {
     ctx.clearRect(0, 0, w, h);
     for (let i = 0; i < particles.length; i++) {
@@ -591,6 +735,7 @@ let currentFile = null;
 let convertedData = null;
 let convertedHeaders = null;
 let totalPagesExtracted = 0;
+let statementInfo = '';
 
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
@@ -638,6 +783,7 @@ document.getElementById('btnNewFile').addEventListener('click', () => {
   currentFile = null;
   convertedData = null;
   convertedHeaders = null;
+  statementInfo = '';
   fileInput.value = '';
   fileInfo.classList.add('hidden');
   dropZone.style.opacity = '1';
@@ -659,7 +805,6 @@ function formatSize(bytes) {
   return (bytes / 1073741824).toFixed(2) + ' GB';
 }
 
-// ========== State Management ==========
 function showState(state) {
   document.getElementById('stateUpload').classList.toggle('hidden', state !== 'upload');
   document.getElementById('stateProcessing').classList.toggle('hidden', state !== 'processing');
@@ -683,6 +828,14 @@ function addLog(msg) {
   line.textContent = `[${ts}] ${msg}`;
   log.appendChild(line);
   log.parentElement.scrollTop = log.parentElement.scrollHeight;
+}
+
+// Column letters for Excel preview
+function colLetter(n) {
+  let s = '';
+  n++;
+  while (n > 0) { n--; s = String.fromCharCode(65 + (n % 26)) + s; n = Math.floor(n / 26); }
+  return s;
 }
 
 async function startConversion(file) {
@@ -713,14 +866,11 @@ async function startConversion(file) {
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
       const viewport = page.getViewport({ scale: 1 });
-
       for (const item of textContent.items) {
         if (item.str && item.str.trim()) {
-          const transform = item.transform;
-          const [, , , scaleY, tx, ty] = transform;
+          const [, , , scaleY, tx, ty] = item.transform;
           allItems.push({
-            text: item.str,
-            x: tx,
+            text: item.str, x: tx,
             y: viewport.height - ty,
             width: item.width,
             height: Math.abs(item.height * scaleY),
@@ -728,7 +878,6 @@ async function startConversion(file) {
           });
         }
       }
-
       const pct = 15 + Math.floor((i / totalPagesExtracted) * 45);
       updateProgress(pct, 'Extracting Text...', `Processing page ${i} of ${totalPagesExtracted}`, `${allItems.length} text items extracted`);
       if (i % 5 === 0 || i === totalPagesExtracted) addLog(`Page ${i}/${totalPagesExtracted} extracted — ${allItems.length} text items total`);
@@ -740,13 +889,16 @@ async function startConversion(file) {
       throw new Error('No extractable text found in this PDF. The file might be a scanned image. Please use a text-based PDF.');
     }
 
+    // Extract statement period info (From/To dates)
+    statementInfo = extractStatementInfo(allItems);
+    if (statementInfo) addLog(`Statement period detected: ${statementInfo}`);
+
     updateProgress(62, 'Parsing Table...', 'Identifying columns and rows', 'Position-based analysis');
     addLog('Starting multi-strategy table parsing...');
     await new Promise(r => setTimeout(r, 50));
 
     let result = null;
 
-    // Strategy 1: Keyword-based header detection
     addLog('[Strategy 1] Keyword-based header detection...');
     result = parseStrategyKeyword(allItems);
     if (result.rows.length > 0) {
@@ -755,7 +907,6 @@ async function startConversion(file) {
       addLog('Strategy 1: No rows found, trying next strategy...');
     }
 
-    // Strategy 2: Structure-based detection
     if (!result || result.rows.length === 0) {
       updateProgress(72, 'Trying Alternate Parser...', 'Structure-based detection', 'Analyzing table layout');
       addLog('[Strategy 2] Structure-based column detection...');
@@ -767,7 +918,6 @@ async function startConversion(file) {
       }
     }
 
-    // Strategy 3: Regex-based line parsing
     if (!result || result.rows.length === 0) {
       updateProgress(80, 'Trying Regex Parser...', 'Pattern-based extraction', 'Searching for transaction patterns');
       addLog('[Strategy 3] Regex-based pattern extraction...');
@@ -779,7 +929,6 @@ async function startConversion(file) {
       }
     }
 
-    // Strategy 4: Broad extraction
     if (!result || result.rows.length === 0) {
       updateProgress(88, 'Last Resort Parser...', 'Finding any date-containing lines', 'Broad extraction');
       addLog('[Strategy 4] Broad date-based extraction...');
@@ -795,17 +944,20 @@ async function startConversion(file) {
       throw new Error('Could not detect a table in this PDF. The file may not contain tabular data, or it may be a scanned image. Please ensure the PDF has selectable text with a table structure.');
     }
 
+    // Normalize headers to standard bank statement columns
+    const normalized = normalizeHeaders(result.headers, result.rows);
+
     updateProgress(92, 'Building Preview...', 'Rendering data table', 'Almost done');
-    addLog(`Final result: ${result.headers.length} columns x ${result.rows.length} rows`);
+    addLog(`Final result: ${normalized.headers.length} columns x ${normalized.rows.length} rows`);
     await new Promise(r => setTimeout(r, 200));
 
-    convertedHeaders = result.headers;
-    convertedData = result.rows;
+    convertedHeaders = normalized.headers;
+    convertedData = normalized.rows;
 
-    renderPreview(result.headers, result.rows);
+    renderExcelPreview(normalized.headers, normalized.rows, result.rawLines);
     document.getElementById('rawTextContent').textContent = result.rawLines.join('\n');
 
-    updateProgress(100, 'Conversion Complete', `${result.rows.length} rows extracted from ${totalPagesExtracted} pages`, 'Ready to download');
+    updateProgress(100, 'Conversion Complete', `${normalized.rows.length} rows extracted from ${totalPagesExtracted} pages`, 'Ready to download');
     addLog('Conversion complete! Excel file ready for download.');
 
     morphPdf.classList.remove('processing');
@@ -815,13 +967,91 @@ async function startConversion(file) {
 
     await new Promise(r => setTimeout(r, 800));
     showState('preview');
-    showToast(`Successfully converted ${result.rows.length} rows to Excel.`);
+    showToast(`Successfully converted ${normalized.rows.length} rows to Excel.`);
 
   } catch (err) {
     addLog('ERROR: ' + err.message);
     showToast(err.message, 'error');
     setTimeout(() => showState('upload'), 2500);
   }
+}
+
+// ========== Extract Statement Period ==========
+function extractStatementInfo(items) {
+  const lines = groupByLine(items, 5);
+  const rawLines = lines.map(l => l.items.map(it => it.text).join(' '));
+  for (const line of rawLines) {
+    const fromTo = line.match(/(?:from|for)\s*:?\s*(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})\s*(?:to|till|-|–)\s*:?\s*(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})/i);
+    if (fromTo) return `From: ${fromTo[1]} To : ${fromTo[2]}`;
+  }
+  return '';
+}
+
+// ========== Normalize Headers to Standard Bank Statement Columns ==========
+function normalizeHeaders(headers, rows) {
+  const mapping = {
+    'date': 'Date', 'txn date': 'Date', 'trans date': 'Date', 'transaction date': 'Date',
+    'narration': 'Narration', 'particulars': 'Narration', 'description': 'Narration',
+    'details': 'Narration', 'remarks': 'Narration', 'transaction details': 'Narration',
+    'cheq./ref.no.': 'Cheq./Ref.No.', 'cheque/ref no.': 'Cheq./Ref.No.',
+    'cheq. / ref. no.': 'Cheq./Ref.No.', 'ref. no.': 'Cheq./Ref.No.',
+    'ref no.': 'Cheq./Ref.No.', 'reference': 'Cheq./Ref.No.', 'ref': 'Cheq./Ref.No.',
+    'cheque no.': 'Cheq./Ref.No.', 'chq./ref. no.': 'Cheq./Ref.No.',
+    'value dt.': 'Value Dt.', 'value date': 'Value Dt.', 'val dt.': 'Value Dt.',
+    'withdrawal amt.': 'Withdrawal Amt.', 'withdrawal': 'Withdrawal Amt.',
+    'debit': 'Withdrawal Amt.', 'debit amt.': 'Withdrawal Amt.',
+    'dr': 'Withdrawal Amt.', 'debit amount': 'Withdrawal Amt.',
+    'deposit amt.': 'Deposit Amt.', 'deposit': 'Deposit Amt.',
+    'credit': 'Deposit Amt.', 'credit amt.': 'Deposit Amt.',
+    'cr': 'Deposit Amt.', 'credit amount': 'Deposit Amt.',
+    'closing balance': 'Closing Balance', 'balance': 'Closing Balance',
+    'closing bal.': 'Closing Balance', 'cl. balance': 'Closing Balance',
+    'amount': 'Withdrawal Amt.'
+  };
+
+  const standardOrder = ['Date', 'Narration', 'Cheq./Ref.No.', 'Value Dt.', 'Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance'];
+  const normalizedRows = [];
+
+  // Map each header to standard name
+  const headerMap = headers.map(h => {
+    const lower = h.toLowerCase().trim();
+    return mapping[lower] || h;
+  });
+
+  // Check which standard columns we have
+  const foundCols = new Set(headerMap.filter(h => standardOrder.includes(h)));
+  // If we found a generic "Amount", check if we have separate withdrawal/deposit
+  const hasGenericAmount = headerMap.includes('Withdrawal Amt.') && headers.some(h => h.toLowerCase().trim() === 'amount');
+  
+  for (const row of rows) {
+    const newRow = {};
+    for (let i = 0; i < headers.length; i++) {
+      const stdName = headerMap[i];
+      const oldKey = headers[i];
+      // If this column maps to a standard name that already exists, try to figure out which one
+      if (stdName === 'Withdrawal Amt.' && newRow['Withdrawal Amt.'] !== undefined && newRow['Withdrawal Amt.'] !== '') {
+        // Could be deposit if we already have withdrawal
+        if (!foundCols.has('Deposit Amt.') || headerMap.filter(h => h === 'Deposit Amt.').length === 0) {
+          newRow['Deposit Amt.'] = (row[oldKey] || '').trim();
+          continue;
+        }
+      }
+      newRow[stdName] = (row[oldKey] || '').trim();
+    }
+    normalizedRows.push(newRow);
+  }
+
+  // Determine final headers: standard columns we have, then any extras
+  const finalHeaders = [];
+  for (const col of standardOrder) {
+    if (foundCols.has(col)) finalHeaders.push(col);
+  }
+  // Add any non-standard columns
+  for (const col of headerMap) {
+    if (!standardOrder.includes(col) && !finalHeaders.includes(col)) finalHeaders.push(col);
+  }
+
+  return { headers: finalHeaders, rows: normalizedRows };
 }
 
 // ========================================================================
@@ -832,7 +1062,6 @@ function groupByLine(items, tolerance) {
   items.sort((a, b) => b.y - a.y || a.x - b.x);
   const lines = [];
   if (items.length === 0) return lines;
-
   let currentLine = { y: items[0].y, items: [items[0]] };
   for (let i = 1; i < items.length; i++) {
     if (Math.abs(items[i].y - currentLine.y) < tolerance) {
@@ -870,11 +1099,6 @@ function looksLikeDate(text) {
   return /^\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}/.test(text.trim());
 }
 
-function looksLikeAmount(text) {
-  const cleaned = text.trim().replace(/\s*(Dr|Cr|DR|CR)\s*$/, '');
-  return /^[\d,]+\.\d{2}$/.test(cleaned) || /^[\d,]+$/.test(cleaned);
-}
-
 function isNonDataRow(text) {
   const t = text.toLowerCase().trim();
   if (t.length < 3) return true;
@@ -885,52 +1109,31 @@ function isNonDataRow(text) {
   return false;
 }
 
-// --- Strategy 1: Keyword-based header detection ---
+// --- Strategy 1 ---
 function parseStrategyKeyword(items) {
   const lines = groupByLine(items, 5);
   const rawLines = lines.map(l => l.items.map(it => it.text).join('  '));
-
-  const keywords = [
-    'date', 'narration', 'withdrawal', 'deposit', 'closing', 'balance',
-    'cheq', 'ref', 'value', 'trans', 'dr', 'cr', 'debit', 'credit',
-    'amount', 'particulars', 'details', 'description', 'remarks',
-    'sl', 'no.', 'serial', 'number', 'type', 'category'
-  ];
-
+  const keywords = ['date','narration','withdrawal','deposit','closing','balance','cheq','ref','value','trans','dr','cr','debit','credit','amount','particulars','details','description','remarks','sl','no.','serial','number','type','category'];
   let bestIdx = -1, bestScore = 0;
   for (let i = 0; i < Math.min(lines.length, 80); i++) {
     const text = lines[i].items.map(it => it.text).join(' ').toLowerCase();
     let score = 0;
-    for (const kw of keywords) {
-      if (text.includes(kw)) score++;
-    }
+    for (const kw of keywords) { if (text.includes(kw)) score++; }
     if (lines[i].items.length >= 4) score += 2;
     if (lines[i].items.length >= 6) score += 1;
     if (score > bestScore) { bestScore = score; bestIdx = i; }
   }
-
   if (bestScore < 2 || bestIdx === -1) return { headers: [], rows: [], rawLines };
-
   const headerLine = lines[bestIdx];
   addLog(`  Header found at line ${bestIdx}: "${rawLines[bestIdx].substring(0, 80)}..."`);
-
   const columns = [];
   for (let i = 0; i < headerLine.items.length; i++) {
-    const nextX = i < headerLine.items.length - 1
-      ? (headerLine.items[i].x + headerLine.items[i + 1].x) / 2
-      : headerLine.items[i].x + 300;
-    columns.push({
-      name: headerLine.items[i].text.trim(),
-      x: headerLine.items[i].x,
-      endX: nextX
-    });
+    const nextX = i < headerLine.items.length - 1 ? (headerLine.items[i].x + headerLine.items[i + 1].x) / 2 : headerLine.items[i].x + 300;
+    columns.push({ name: headerLine.items[i].text.trim(), x: headerLine.items[i].x, endX: nextX });
   }
-
   if (columns.length < 2) return { headers: [], rows: [], rawLines };
-
   const headers = columns.map(c => c.name);
   const rows = [];
-
   for (let i = bestIdx + 1; i < lines.length; i++) {
     const line = lines[i];
     const row = {};
@@ -938,60 +1141,39 @@ function parseStrategyKeyword(items) {
       const matching = line.items.filter(it => it.x >= col.x - 3 && it.x < col.endX);
       row[col.name] = matching.map(it => it.text).join(' ').trim();
     }
-
     const combined = Object.values(row).join(' ');
     if (isNonDataRow(combined)) continue;
     if (combined.trim().length < 5) continue;
-
-    const nonEmpty = Object.values(row).filter(v => v.length > 0).length;
-    if (nonEmpty < 2) continue;
-
+    if (Object.values(row).filter(v => v.length > 0).length < 2) continue;
     rows.push(row);
   }
-
   return { headers, rows, rawLines };
 }
 
-// --- Strategy 2: Structure-based detection ---
+// --- Strategy 2 ---
 function parseStrategyStructure(items) {
   const lines = groupByLine(items, 5);
   const rawLines = lines.map(l => l.items.map(it => it.text).join('  '));
-
   const countMap = {};
   for (const line of lines) {
     const c = line.items.length;
     if (c >= 3) countMap[c] = (countMap[c] || 0) + 1;
   }
-
   let bestCount = 0, bestFreq = 0;
   for (const [count, freq] of Object.entries(countMap)) {
-    if (freq > bestFreq && parseInt(count) >= 3) {
-      bestFreq = freq;
-      bestCount = parseInt(count);
-    }
+    if (freq > bestFreq && parseInt(count) >= 3) { bestFreq = freq; bestCount = parseInt(count); }
   }
-
   if (bestCount < 3 || bestFreq < 3) return { headers: [], rows: [], rawLines };
-
   addLog(`  Detected consistent ${bestCount}-column structure (${bestFreq} lines)`);
-
   const tableLines = lines.filter(l => l.items.length === bestCount);
   const headerLine = tableLines[0];
   const columns = [];
   for (let i = 0; i < headerLine.items.length; i++) {
-    const nextX = i < headerLine.items.length - 1
-      ? (headerLine.items[i].x + headerLine.items[i + 1].x) / 2
-      : headerLine.items[i].x + 300;
-    columns.push({
-      name: headerLine.items[i].text.trim() || `Column ${i + 1}`,
-      x: headerLine.items[i].x,
-      endX: nextX
-    });
+    const nextX = i < headerLine.items.length - 1 ? (headerLine.items[i].x + headerLine.items[i + 1].x) / 2 : headerLine.items[i].x + 300;
+    columns.push({ name: headerLine.items[i].text.trim() || `Column ${i + 1}`, x: headerLine.items[i].x, endX: nextX });
   }
-
   const headers = columns.map(c => c.name);
   const rows = [];
-
   for (let i = 1; i < tableLines.length; i++) {
     const line = tableLines[i];
     const row = {};
@@ -999,125 +1181,80 @@ function parseStrategyStructure(items) {
       const matching = line.items.filter(it => it.x >= col.x - 3 && it.x < col.endX);
       row[col.name] = matching.map(it => it.text).join(' ').trim();
     }
-
     const combined = Object.values(row).join(' ');
     if (isNonDataRow(combined)) continue;
     if (combined.trim().length < 5) continue;
-
     rows.push(row);
   }
-
   return { headers, rows, rawLines };
 }
 
-// --- Strategy 3: Regex-based pattern extraction ---
+// --- Strategy 3 ---
 function parseStrategyRegex(items) {
   const lines = groupByLine(items, 5);
   const rawLines = lines.map(l => l.items.map(it => it.text).join('  '));
-
   const defaultHeaders = ['Date', 'Narration', 'Cheq./Ref.No.', 'Value Dt.', 'Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance'];
   const rows = [];
   const dateRegex = /^(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})\s+(.+)/;
-
   for (const rawLine of rawLines) {
     const m = rawLine.match(dateRegex);
     if (!m) continue;
-
     const date = m[1];
     const rest = m[2].trim();
-
     const amtRegex = /([\d,]+\.\d{2})/g;
     const amounts = [];
     let am;
     while ((am = amtRegex.exec(rest)) !== null) amounts.push(am[1]);
     if (amounts.length === 0) continue;
-
     const firstAmtIdx = rest.indexOf(amounts[0]);
     const narrationPart = rest.substring(0, firstAmtIdx).trim();
-
-    let narration = narrationPart;
-    let refNo = '';
-    let valueDt = '';
-
+    let narration = narrationPart, refNo = '', valueDt = '';
     const refMatch = narration.match(/\s+(\d{6,14})\s*$/);
-    if (refMatch) {
-      refNo = refMatch[1];
-      narration = narration.substring(0, narration.lastIndexOf(refNo)).trim();
-    }
-
+    if (refMatch) { refNo = refMatch[1]; narration = narration.substring(0, narration.lastIndexOf(refNo)).trim(); }
     const dtMatch = narration.match(/(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})\s*$/);
-    if (dtMatch && dtMatch[1] !== date) {
-      valueDt = dtMatch[1];
-      narration = narration.substring(0, narration.lastIndexOf(dtMatch[1])).trim();
-    }
-
+    if (dtMatch && dtMatch[1] !== date) { valueDt = dtMatch[1]; narration = narration.substring(0, narration.lastIndexOf(dtMatch[1])).trim(); }
     let withdrawal = '', deposit = '', balance = '';
     if (amounts.length >= 1) balance = amounts[amounts.length - 1];
     if (amounts.length >= 2) deposit = amounts[amounts.length - 2];
     if (amounts.length >= 3) {
       const narrLower = narration.toLowerCase();
-      if (narrLower.includes('withdraw') || narrLower.includes('neft') || narrLower.includes('rtgs') ||
-          narrLower.includes('transfer') || narrLower.includes('payment') || narrLower.includes('debit') ||
-          narrLower.includes('imps') || narrLower.includes('upi')) {
-        withdrawal = amounts[amounts.length - 2];
-        deposit = amounts[amounts.length - 3];
+      if (narrLower.includes('withdraw') || narrLower.includes('neft') || narrLower.includes('rtgs') || narrLower.includes('transfer') || narrLower.includes('payment') || narrLower.includes('debit') || narrLower.includes('imps') || narrLower.includes('upi')) {
+        withdrawal = amounts[amounts.length - 2]; deposit = amounts[amounts.length - 3];
       } else {
         withdrawal = amounts[amounts.length - 3];
       }
     }
-
     if (isNonDataRow(narration)) continue;
-
-    rows.push({
-      'Date': date, 'Narration': narration, 'Cheq./Ref.No.': refNo,
-      'Value Dt.': valueDt, 'Withdrawal Amt.': withdrawal,
-      'Deposit Amt.': deposit, 'Closing Balance': balance
-    });
+    rows.push({ 'Date': date, 'Narration': narration, 'Cheq./Ref.No.': refNo, 'Value Dt.': valueDt, 'Withdrawal Amt.': withdrawal, 'Deposit Amt.': deposit, 'Closing Balance': balance });
   }
-
   return { headers: defaultHeaders, rows, rawLines };
 }
 
-// --- Strategy 4: Broad extraction ---
+// --- Strategy 4 ---
 function parseStrategyBroad(items) {
   const lines = groupByLine(items, 5);
   const rawLines = lines.map(l => l.items.map(it => it.text).join('  '));
-
-  let headerLine = null;
-  let headerIdx = -1;
-
+  let headerLine = null, headerIdx = -1;
   for (let i = 0; i < Math.min(lines.length, 40); i++) {
     if (lines[i].items.length >= 3 && !looksLikeDate(lines[i].items[0].text)) {
-      headerLine = lines[i];
-      headerIdx = i;
-      break;
+      headerLine = lines[i]; headerIdx = i; break;
     }
   }
-
-  const defaultHeaders = headerLine
-    ? headerLine.items.map(it => it.text.trim() || 'Column')
-    : ['Column 1', 'Column 2', 'Column 3', 'Column 4', 'Column 5'];
-
+  const defaultHeaders = headerLine ? headerLine.items.map(it => it.text.trim() || 'Column') : ['Column 1', 'Column 2', 'Column 3', 'Column 4', 'Column 5'];
   const columns = [];
   if (headerLine) {
     for (let i = 0; i < headerLine.items.length; i++) {
-      const nextX = i < headerLine.items.length - 1
-        ? (headerLine.items[i].x + headerLine.items[i + 1].x) / 2
-        : headerLine.items[i].x + 300;
+      const nextX = i < headerLine.items.length - 1 ? (headerLine.items[i].x + headerLine.items[i + 1].x) / 2 : headerLine.items[i].x + 300;
       columns.push({ x: headerLine.items[i].x, endX: nextX });
     }
   }
-
   const rows = [];
   const startIdx = headerIdx >= 0 ? headerIdx + 1 : 0;
-
   for (let i = startIdx; i < lines.length; i++) {
     const line = lines[i];
     const lineText = line.items.map(it => it.text).join(' ');
-
     if (!looksLikeDate(line.items[0]?.text || '') && !looksLikeDate(lineText)) continue;
     if (isNonDataRow(lineText)) continue;
-
     let row;
     if (columns.length > 0) {
       row = {};
@@ -1127,66 +1264,134 @@ function parseStrategyBroad(items) {
       }
     } else {
       row = {};
-      line.items.forEach((it, idx) => {
-        const key = idx < defaultHeaders.length ? defaultHeaders[idx] : `Column ${idx + 1}`;
-        row[key] = it.text.trim();
-      });
+      line.items.forEach((it, idx) => { const key = idx < defaultHeaders.length ? defaultHeaders[idx] : `Column ${idx + 1}`; row[key] = it.text.trim(); });
     }
-
     if (Object.values(row).some(v => v.length > 0)) rows.push(row);
   }
-
   return { headers: defaultHeaders, rows, rawLines };
 }
 
-// ========== Render Preview ==========
-function renderPreview(headers, rows) {
-  const thead = document.getElementById('tableHead');
-  const tbody = document.getElementById('tableBody');
-  thead.innerHTML = '';
-  tbody.innerHTML = '';
+// ========== Render Excel-Like Preview ==========
+function renderExcelPreview(headers, rows, rawLines) {
+  const table = document.getElementById('excelGrid');
+  table.innerHTML = '';
 
-  for (const h of headers) {
+  // Update titlebar filename
+  const fname = currentFile ? currentFile.name.replace(/\.pdf$/i, '') + '.xlsx' : 'converted_statement.xlsx';
+  document.getElementById('excelFilename').textContent = fname;
+
+  const numColSet = new Set(['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance']);
+  const dateColSet = new Set(['Date', 'Value Dt.']);
+  const refColSet = new Set(['Cheq./Ref.No.']);
+  const narrColSet = new Set(['Narration']);
+
+  // Column letter header row
+  const colHeaderRow = document.createElement('tr');
+  colHeaderRow.className = 'col-header-row';
+  const cornerTh = document.createElement('th');
+  cornerTh.textContent = '';
+  colHeaderRow.appendChild(cornerTh);
+  for (let c = 0; c < headers.length; c++) {
     const th = document.createElement('th');
-    th.textContent = h;
-    thead.appendChild(th);
+    th.textContent = colLetter(c);
+    colHeaderRow.appendChild(th);
+  }
+  table.appendChild(colHeaderRow);
+
+  let excelRow = 1;
+
+  // Statement info row (if available)
+  if (statementInfo) {
+    const infoTr = document.createElement('tr');
+    infoTr.className = 'info-row';
+    const infoNumTd = document.createElement('td');
+    infoNumTd.className = 'data-row-header';
+    infoNumTd.textContent = excelRow++;
+    infoTr.appendChild(infoNumTd);
+    const infoTd = document.createElement('td');
+    infoTd.colSpan = headers.length;
+    infoTd.textContent = statementInfo;
+    infoTr.appendChild(infoTd);
+    table.appendChild(infoTr);
   }
 
-  const previewRows = rows.slice(0, 200);
-  const numColNames = new Set(['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance', 'Amount', 'Debit', 'Credit', 'Balance']);
+  // Green statement header row
+  const headerTr = document.createElement('tr');
+  headerTr.className = 'statement-header';
+  const headerNumTd = document.createElement('td');
+  headerNumTd.className = 'data-row-header';
+  headerNumTd.style.background = '#196b3b';
+  headerNumTd.style.color = '#fff';
+  headerNumTd.style.border = '1px solid #196b3b';
+  headerNumTd.textContent = excelRow++;
+  headerTr.appendChild(headerNumTd);
+  for (const h of headers) {
+    const td = document.createElement('td');
+    td.textContent = h;
+    headerTr.appendChild(td);
+  }
+  table.appendChild(headerTr);
 
+  // Data rows
+  const previewRows = rows.slice(0, 300);
   for (let i = 0; i < previewRows.length; i++) {
     const tr = document.createElement('tr');
     tr.style.opacity = '0';
-    tr.style.transform = 'translateY(8px)';
-    tr.style.transition = `all 0.3s ease ${Math.min(i * 15, 800)}ms`;
+    tr.style.transition = `opacity 0.3s ease ${Math.min(i * 12, 600)}ms`;
+
+    const numTd = document.createElement('td');
+    numTd.className = 'data-row-header';
+    numTd.textContent = excelRow++;
+    tr.appendChild(numTd);
 
     for (const h of headers) {
       const td = document.createElement('td');
+      td.className = 'data-cell';
       const val = (rows[i][h] || '').trim();
-      td.textContent = val || '—';
-      if (numColNames.has(h)) td.classList.add('num-cell');
+      td.textContent = val || '';
+
+      if (narrColSet.has(h)) td.classList.add('narration');
+      else if (numColSet.has(h)) td.classList.add('num-cell');
+      else if (dateColSet.has(h)) td.classList.add('date-cell');
+      else if (refColSet.has(h)) td.classList.add('ref-cell');
+
       tr.appendChild(td);
     }
-    tbody.appendChild(tr);
+    table.appendChild(tr);
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        tr.style.opacity = '1';
-        tr.style.transform = 'translateY(0)';
-      });
-    });
+    requestAnimationFrame(() => { requestAnimationFrame(() => { tr.style.opacity = '1'; }); });
   }
 
-  if (rows.length > 200) {
+  if (rows.length > 300) {
     const tr = document.createElement('tr');
+    const numTd = document.createElement('td');
+    numTd.className = 'data-row-header';
+    numTd.textContent = excelRow++;
+    tr.appendChild(numTd);
     const td = document.createElement('td');
     td.colSpan = headers.length;
-    td.className = 'text-center text-gray-400 py-4';
-    td.textContent = `Showing 200 of ${rows.length} rows. Download Excel for full data.`;
+    td.className = 'data-cell';
+    td.style.textAlign = 'center';
+    td.style.color = '#888';
+    td.style.fontStyle = 'italic';
+    td.textContent = `Showing 300 of ${rows.length} rows. Download Excel for full data.`;
     tr.appendChild(td);
-    tbody.appendChild(tr);
+    table.appendChild(tr);
   }
+
+  // Formula bar interaction on hover
+  table.addEventListener('mouseover', e => {
+    const td = e.target.closest('td.data-cell');
+    if (td) {
+      const tr = td.closest('tr');
+      const rowTd = tr.querySelector('.data-row-header');
+      const colIdx = Array.from(tr.children).indexOf(td) - 1;
+      if (rowTd && colIdx >= 0 && colIdx < headers.length) {
+        document.getElementById('formulaRef').textContent = colLetter(colIdx) + rowTd.textContent;
+        document.getElementById('formulaText').textContent = td.textContent;
+      }
+    }
+  });
 
   document.getElementById('statRows').textContent = rows.length;
   document.getElementById('statCols').textContent = headers.length;
@@ -1196,12 +1401,25 @@ function renderPreview(headers, rows) {
 // ========== Download Excel ==========
 function downloadExcel(headers, rows) {
   const wb = XLSX.utils.book_new();
-  const aoa = [headers];
-  for (const row of rows) { aoa.push(headers.map(h => (row[h] || '').trim())); }
+  const aoa = [];
+
+  // Statement info row
+  if (statementInfo) {
+    aoa.push([statementInfo]);
+  }
+
+  // Header row
+  aoa.push(headers);
+
+  // Data rows
+  for (const row of rows) {
+    aoa.push(headers.map(h => (row[h] || '').trim()));
+  }
+
   const ws = XLSX.utils.aoa_to_sheet(aoa);
 
   const colWidths = {
-    'Date': 14, 'Narration': 50, 'Cheq./Ref.No.': 18, 'Value Dt.': 14,
+    'Date': 14, 'Narration': 52, 'Cheq./Ref.No.': 18, 'Value Dt.': 14,
     'Withdrawal Amt.': 20, 'Deposit Amt.': 20, 'Closing Balance': 22,
     'Amount': 18, 'Debit': 18, 'Credit': 18, 'Balance': 22,
     'Particulars': 45, 'Description': 45, 'Details': 40, 'Remarks': 40,
@@ -1210,13 +1428,31 @@ function downloadExcel(headers, rows) {
   };
   ws['!cols'] = headers.map(h => ({ wch: colWidths[h] || 15 }));
 
-  for (let c = 0; c < headers.length; c++) {
-    const cell = ws[XLSX.utils.encode_cell({ r: 0, c: c })];
+  const numColSet = new Set(['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance', 'Amount', 'Debit', 'Credit', 'Balance']);
+  const startRow = statementInfo ? 1 : 0;
+
+  // Statement info row styling
+  if (statementInfo) {
+    const cell = ws[XLSX.utils.encode_cell({ r: 0, c: 0 })];
     if (cell) {
       cell.s = {
-        font: { bold: true, color: { rgb: 'FFFFFF' } },
+        font: { bold: true, sz: 11, name: 'Calibri', color: { rgb: '1A5E35' } },
+        fill: { fgColor: { rgb: 'E8F5E9' } },
+        alignment: { horizontal: 'left' }
+      };
+    }
+    // Merge cells for info row
+    ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: headers.length - 1 } }];
+  }
+
+  // Header row styling
+  for (let c = 0; c < headers.length; c++) {
+    const cell = ws[XLSX.utils.encode_cell({ r: startRow, c: c })];
+    if (cell) {
+      cell.s = {
+        font: { bold: true, sz: 11, name: 'Calibri', color: { rgb: 'FFFFFF' } },
         fill: { fgColor: { rgb: '217346' } },
-        alignment: { horizontal: 'center' },
+        alignment: { horizontal: 'center', vertical: 'center' },
         border: {
           top: { style: 'thin', color: { rgb: '1A5E35' } },
           bottom: { style: 'thin', color: { rgb: '1A5E35' } },
@@ -1227,15 +1463,19 @@ function downloadExcel(headers, rows) {
     }
   }
 
-  const numColNames = new Set(['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance', 'Amount', 'Debit', 'Credit', 'Balance']);
-  for (let r = 1; r <= rows.length; r++) {
+  // Data row styling
+  for (let r = startRow + 1; r < aoa.length; r++) {
     for (let c = 0; c < headers.length; c++) {
       const cell = ws[XLSX.utils.encode_cell({ r, c })];
       if (cell) {
-        const isNum = numColNames.has(headers[c]);
+        const isNum = numColSet.has(headers[c]);
         cell.s = {
           font: { name: 'Calibri', sz: 11 },
-          alignment: { horizontal: isNum ? 'right' : 'left' },
+          alignment: {
+            horizontal: isNum ? 'right' : 'left',
+            vertical: 'center',
+            wrapText: headers[c] === 'Narration'
+          },
           border: {
             top: { style: 'thin', color: { rgb: 'D4D4D4' } },
             bottom: { style: 'thin', color: { rgb: 'D4D4D4' } },
