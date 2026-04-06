@@ -129,29 +129,26 @@ tailwind.config = {
 
   .stat-num { font-variant-numeric:tabular-nums; }
 
-  /* Developer credit */
-  .dev-credit {
+  .footer-credit {
     display:inline-flex; align-items:center; gap:6px;
     color:var(--muted); text-decoration:none; font-size:13px;
     padding:4px 10px 4px 4px; border-radius:20px;
     border:1px solid var(--border); transition:all 0.35s ease;
   }
-  .dev-credit:hover {
+  .footer-credit:hover {
     color:var(--accent); border-color:var(--accent);
     background:rgba(0,214,126,0.06);
-    box-shadow:0 0 20px -5px rgba(0,214,126,0.2);
   }
-  .dev-credit img {
+  .footer-credit img {
     width:24px; height:24px; border-radius:50%;
     border:1.5px solid var(--border); transition:border-color 0.35s;
   }
-  .dev-credit:hover img { border-color:var(--accent); }
-  .dev-credit .dev-name { font-weight:600; letter-spacing:0.2px; }
-  .dev-credit .dev-arrow {
+  .footer-credit:hover img { border-color:var(--accent); }
+  .footer-credit .dev-arrow {
     font-size:10px; opacity:0; transform:translateX(-4px);
     transition:all 0.35s ease;
   }
-  .dev-credit:hover .dev-arrow { opacity:1; transform:translateX(0); }
+  .footer-credit:hover .dev-arrow { opacity:1; transform:translateX(0); }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
@@ -461,11 +458,13 @@ tailwind.config = {
       <span class="text-brand-border">|</span>
       <span>Client-side only. No data leaves your device.</span>
     </div>
-
-    <!-- Developer Credit -->
-    <a href="https://gravatar.com/katragaddasurendra" target="_blank" rel="noopener noreferrer" class="dev-credit" aria-label="Developer profile: katragadaa_surendra">
-      <img src="https://gravatar.com/avatar/katragaddasurendra?d=identicon&s=48" alt="katragadaa_surendra" width="24" height="24">
-      <span class="dev-name">katragadaa_surendra</span>
+    <a href="https://gravatar.com/katragaddasurendra" target="_blank" rel="noopener noreferrer" class="footer-credit" aria-label="Developer: katragadaa_surendra">
+      <img
+        src="https://ui-avatars.com/api/?name=KS&background=0d1512&color=00d67e&size=48&rounded=true&bold=true"
+        alt="Dev"
+        width="24" height="24"
+      >
+      <span class="font-semibold" style="letter-spacing:0.2px">katragadaa_surendra</span>
       <i class="fa-solid fa-arrow-up-right-from-square dev-arrow"></i>
     </a>
   </div>
@@ -591,7 +590,7 @@ function showToast(msg, type = 'success') {
 let currentFile = null;
 let convertedData = null;
 let convertedHeaders = null;
-let rawTextLines = [];
+let totalPagesExtracted = 0;
 
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
@@ -704,21 +703,21 @@ async function startConversion(file) {
 
     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
     const pdf = await loadingTask.promise;
-    const totalPages = pdf.numPages;
-    addLog(`PDF loaded: ${totalPages} page(s) detected`);
-    updateProgress(15, 'Extracting Text...', `Processing page 1 of ${totalPages}`, 'Text extraction started');
+    totalPagesExtracted = pdf.numPages;
+    addLog(`PDF loaded: ${totalPagesExtracted} page(s) detected`);
+    updateProgress(15, 'Extracting Text...', `Processing page 1 of ${totalPagesExtracted}`, 'Text extraction started');
 
     const allItems = [];
-    rawTextLines = [];
 
-    for (let i = 1; i <= totalPages; i++) {
+    for (let i = 1; i <= totalPagesExtracted; i++) {
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
       const viewport = page.getViewport({ scale: 1 });
 
       for (const item of textContent.items) {
         if (item.str && item.str.trim()) {
-          const [, , , scaleY, tx, ty] = item.transform;
+          const transform = item.transform;
+          const [, , , scaleY, tx, ty] = transform;
           allItems.push({
             text: item.str,
             x: tx,
@@ -730,49 +729,83 @@ async function startConversion(file) {
         }
       }
 
-      const pct = 15 + Math.floor((i / totalPages) * 50);
-      updateProgress(pct, 'Extracting Text...', `Processing page ${i} of ${totalPages}`, `${allItems.length} text items extracted`);
-      if (i % 5 === 0 || i === totalPages) addLog(`Page ${i}/${totalPages} extracted — ${allItems.length} text items total`);
+      const pct = 15 + Math.floor((i / totalPagesExtracted) * 45);
+      updateProgress(pct, 'Extracting Text...', `Processing page ${i} of ${totalPagesExtracted}`, `${allItems.length} text items extracted`);
+      if (i % 5 === 0 || i === totalPagesExtracted) addLog(`Page ${i}/${totalPagesExtracted} extracted — ${allItems.length} text items total`);
       await new Promise(r => setTimeout(r, 10));
     }
-    addLog(`Text extraction complete: ${allItems.length} text items from ${totalPages} pages`);
+    addLog(`Text extraction complete: ${allItems.length} text items from ${totalPagesExtracted} pages`);
 
-    updateProgress(68, 'Parsing Table...', 'Identifying columns and rows', 'Position-based analysis');
-    addLog('Starting position-based table parsing...');
-    await new Promise(r => setTimeout(r, 100));
+    if (allItems.length === 0) {
+      throw new Error('No extractable text found in this PDF. The file might be a scanned image. Please use a text-based PDF.');
+    }
 
-    const { headers, rows, rawLines } = parseBankStatement(allItems);
-    rawTextLines = rawLines;
+    updateProgress(62, 'Parsing Table...', 'Identifying columns and rows', 'Position-based analysis');
+    addLog('Starting multi-strategy table parsing...');
+    await new Promise(r => setTimeout(r, 50));
 
-    updateProgress(85, 'Generating Excel...', 'Creating spreadsheet structure', `${rows.length} data rows identified`);
-    addLog(`Parsing complete: ${headers.length} columns, ${rows.length} data rows`);
+    let result = null;
 
-    if (rows.length === 0) {
-      addLog('WARNING: No table rows detected. Trying fallback regex parser...');
-      updateProgress(80, 'Trying Fallback Parser...', 'Regex-based extraction', 'Alternative method');
-      await new Promise(r => setTimeout(r, 200));
-      const fallback = parseFallback(allItems);
-      if (fallback.rows.length > 0) {
-        headers.length = 0; headers.push(...fallback.headers);
-        rows.length = 0; rows.push(...fallback.rows);
-        addLog(`Fallback parser found ${rows.length} rows`);
+    // Strategy 1: Keyword-based header detection
+    addLog('[Strategy 1] Keyword-based header detection...');
+    result = parseStrategyKeyword(allItems);
+    if (result.rows.length > 0) {
+      addLog(`Strategy 1 SUCCESS: ${result.rows.length} rows, ${result.headers.length} columns`);
+    } else {
+      addLog('Strategy 1: No rows found, trying next strategy...');
+    }
+
+    // Strategy 2: Structure-based detection
+    if (!result || result.rows.length === 0) {
+      updateProgress(72, 'Trying Alternate Parser...', 'Structure-based detection', 'Analyzing table layout');
+      addLog('[Strategy 2] Structure-based column detection...');
+      result = parseStrategyStructure(allItems);
+      if (result.rows.length > 0) {
+        addLog(`Strategy 2 SUCCESS: ${result.rows.length} rows, ${result.headers.length} columns`);
+      } else {
+        addLog('Strategy 2: No rows found, trying next strategy...');
       }
     }
 
-    if (rows.length === 0) {
-      throw new Error('Could not detect a bank statement table in this PDF. Please ensure the PDF contains a transaction table.');
+    // Strategy 3: Regex-based line parsing
+    if (!result || result.rows.length === 0) {
+      updateProgress(80, 'Trying Regex Parser...', 'Pattern-based extraction', 'Searching for transaction patterns');
+      addLog('[Strategy 3] Regex-based pattern extraction...');
+      result = parseStrategyRegex(allItems);
+      if (result.rows.length > 0) {
+        addLog(`Strategy 3 SUCCESS: ${result.rows.length} rows, ${result.headers.length} columns`);
+      } else {
+        addLog('Strategy 3: No rows found, trying last resort...');
+      }
+    }
+
+    // Strategy 4: Broad extraction
+    if (!result || result.rows.length === 0) {
+      updateProgress(88, 'Last Resort Parser...', 'Finding any date-containing lines', 'Broad extraction');
+      addLog('[Strategy 4] Broad date-based extraction...');
+      result = parseStrategyBroad(allItems);
+      if (result.rows.length > 0) {
+        addLog(`Strategy 4 SUCCESS: ${result.rows.length} rows, ${result.headers.length} columns`);
+      } else {
+        addLog('Strategy 4: No rows found.');
+      }
+    }
+
+    if (!result || result.rows.length === 0) {
+      throw new Error('Could not detect a table in this PDF. The file may not contain tabular data, or it may be a scanned image. Please ensure the PDF has selectable text with a table structure.');
     }
 
     updateProgress(92, 'Building Preview...', 'Rendering data table', 'Almost done');
+    addLog(`Final result: ${result.headers.length} columns x ${result.rows.length} rows`);
     await new Promise(r => setTimeout(r, 200));
 
-    convertedHeaders = headers;
-    convertedData = rows;
+    convertedHeaders = result.headers;
+    convertedData = result.rows;
 
-    renderPreview(headers, rows);
-    document.getElementById('rawTextContent').textContent = rawTextLines.join('\n');
+    renderPreview(result.headers, result.rows);
+    document.getElementById('rawTextContent').textContent = result.rawLines.join('\n');
 
-    updateProgress(100, 'Conversion Complete', `${rows.length} rows extracted from ${totalPages} pages`, 'Ready to download');
+    updateProgress(100, 'Conversion Complete', `${result.rows.length} rows extracted from ${totalPagesExtracted} pages`, 'Ready to download');
     addLog('Conversion complete! Excel file ready for download.');
 
     morphPdf.classList.remove('processing');
@@ -782,35 +815,18 @@ async function startConversion(file) {
 
     await new Promise(r => setTimeout(r, 800));
     showState('preview');
-    showToast(`Successfully converted ${rows.length} transactions to Excel.`);
+    showToast(`Successfully converted ${result.rows.length} rows to Excel.`);
 
   } catch (err) {
     addLog('ERROR: ' + err.message);
     showToast(err.message, 'error');
-    setTimeout(() => showState('upload'), 2000);
+    setTimeout(() => showState('upload'), 2500);
   }
 }
 
-// ========== Bank Statement Parser ==========
-function parseBankStatement(items) {
-  const lines = groupByLine(items, 3);
-  const rawLines = lines.map(l => l.items.map(it => it.text).join(' '));
-
-  const headerIdx = findHeaderRow(lines);
-  if (headerIdx === -1) return { headers: [], rows: [], rawLines };
-
-  const columns = getColumnsFromHeader(lines[headerIdx]);
-  if (columns.length < 2) return { headers: [], rows: [], rawLines };
-
-  const headers = columns.map(c => c.name);
-  const rows = [];
-  for (let i = headerIdx + 1; i < lines.length; i++) {
-    const row = parseDataRow(lines[i], columns);
-    if (row) rows.push(row);
-  }
-
-  return { headers, rows, rawLines };
-}
+// ========================================================================
+// PARSING ENGINE — 4-Strategy Fallback System
+// ========================================================================
 
 function groupByLine(items, tolerance) {
   items.sort((a, b) => b.y - a.y || a.x - b.x);
@@ -823,110 +839,183 @@ function groupByLine(items, tolerance) {
       currentLine.items.push(items[i]);
     } else {
       currentLine.items.sort((a, b) => a.x - b.x);
+      currentLine.items = mergeCloseItems(currentLine.items, 2);
       lines.push(currentLine);
       currentLine = { y: items[i].y, items: [items[i]] };
     }
   }
   currentLine.items.sort((a, b) => a.x - b.x);
+  currentLine.items = mergeCloseItems(currentLine.items, 2);
   lines.push(currentLine);
   return lines;
 }
 
-function findHeaderRow(lines) {
-  const keywords = ['date', 'narration', 'withdrawal', 'deposit', 'closing', 'balance', 'cheq', 'ref', 'value'];
-  let bestIdx = -1, bestScore = 0;
+function mergeCloseItems(items, gap) {
+  if (items.length <= 1) return items;
+  const merged = [{ text: items[0].text, x: items[0].x, width: items[0].width }];
+  for (let i = 1; i < items.length; i++) {
+    const prev = merged[merged.length - 1];
+    const itemEnd = prev.x + prev.width;
+    if (items[i].x - itemEnd < gap) {
+      prev.text = prev.text + ' ' + items[i].text;
+      prev.width = (items[i].x + items[i].width) - prev.x;
+    } else {
+      merged.push({ text: items[i].text, x: items[i].x, width: items[i].width });
+    }
+  }
+  return merged;
+}
 
-  for (let i = 0; i < Math.min(lines.length, 50); i++) {
+function looksLikeDate(text) {
+  return /^\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}/.test(text.trim());
+}
+
+function looksLikeAmount(text) {
+  const cleaned = text.trim().replace(/\s*(Dr|Cr|DR|CR)\s*$/, '');
+  return /^[\d,]+\.\d{2}$/.test(cleaned) || /^[\d,]+$/.test(cleaned);
+}
+
+function isNonDataRow(text) {
+  const t = text.toLowerCase().trim();
+  if (t.length < 3) return true;
+  if (/^(total|grand\s*total|sub\s*total|opening\s*balance|closing\s*balance)/.test(t)) return true;
+  if (/^(page\s*\d|continued|statement\s*of\s*account|account\s*statement)/.test(t)) return true;
+  if (/^(date|txn|transaction|sr|s\.?\s*no)/.test(t) && t.length < 60) return true;
+  if (/^( hdfc|sbi|icici|axis|kotak|pnb|bob|canara|union|indusind)/.test(t)) return true;
+  return false;
+}
+
+// --- Strategy 1: Keyword-based header detection ---
+function parseStrategyKeyword(items) {
+  const lines = groupByLine(items, 5);
+  const rawLines = lines.map(l => l.items.map(it => it.text).join('  '));
+
+  const keywords = [
+    'date', 'narration', 'withdrawal', 'deposit', 'closing', 'balance',
+    'cheq', 'ref', 'value', 'trans', 'dr', 'cr', 'debit', 'credit',
+    'amount', 'particulars', 'details', 'description', 'remarks',
+    'sl', 'no.', 'serial', 'number', 'type', 'category'
+  ];
+
+  let bestIdx = -1, bestScore = 0;
+  for (let i = 0; i < Math.min(lines.length, 80); i++) {
     const text = lines[i].items.map(it => it.text).join(' ').toLowerCase();
     let score = 0;
-    for (const kw of keywords) { if (text.includes(kw)) score++; }
-    if (lines[i].items.length >= 4) score += 1;
+    for (const kw of keywords) {
+      if (text.includes(kw)) score++;
+    }
+    if (lines[i].items.length >= 4) score += 2;
+    if (lines[i].items.length >= 6) score += 1;
     if (score > bestScore) { bestScore = score; bestIdx = i; }
   }
 
-  return bestScore >= 3 ? bestIdx : -1;
-}
+  if (bestScore < 2 || bestIdx === -1) return { headers: [], rows: [], rawLines };
 
-function getColumnsFromHeader(headerLine) {
-  const items = headerLine.items;
+  const headerLine = lines[bestIdx];
+  addLog(`  Header found at line ${bestIdx}: "${rawLines[bestIdx].substring(0, 80)}..."`);
+
   const columns = [];
+  for (let i = 0; i < headerLine.items.length; i++) {
+    const nextX = i < headerLine.items.length - 1
+      ? (headerLine.items[i].x + headerLine.items[i + 1].x) / 2
+      : headerLine.items[i].x + 300;
+    columns.push({
+      name: headerLine.items[i].text.trim(),
+      x: headerLine.items[i].x,
+      endX: nextX
+    });
+  }
 
-  const mapping = {
-    'date': 'Date', 'narrat': 'Narration', 'cheq': 'Cheq./Ref.No.', 'ref.': 'Cheq./Ref.No.',
-    'ref': 'Cheq./Ref.No.', 'value': 'Value Dt.', 'withdraw': 'Withdrawal Amt.',
-    'deposit': 'Deposit Amt.', 'closing': 'Closing Balance', 'balance': 'Closing Balance'
-  };
+  if (columns.length < 2) return { headers: [], rows: [], rawLines };
 
-  for (let i = 0; i < items.length; i++) {
-    const text = items[i].text.trim().toLowerCase();
-    let colName = null;
+  const headers = columns.map(c => c.name);
+  const rows = [];
 
-    if (text.includes('value')) {
-      colName = 'Value Dt.';
-    } else {
-      for (const [key, name] of Object.entries(mapping)) {
-        if (text.includes(key) && name !== 'Value Dt.') { colName = name; break; }
-      }
-      if (!colName && text.includes('balance')) colName = 'Closing Balance';
+  for (let i = bestIdx + 1; i < lines.length; i++) {
+    const line = lines[i];
+    const row = {};
+    for (const col of columns) {
+      const matching = line.items.filter(it => it.x >= col.x - 3 && it.x < col.endX);
+      row[col.name] = matching.map(it => it.text).join(' ').trim();
     }
 
-    if (colName) {
-      if (!columns.find(c => c.name === colName)) {
-        columns.push({
-          name: colName,
-          x: items[i].x,
-          endX: i < items.length - 1 ? items[i + 1].x : items[i].x + 300,
-          width: items[i].width
-        });
-      }
+    const combined = Object.values(row).join(' ');
+    if (isNonDataRow(combined)) continue;
+    if (combined.trim().length < 5) continue;
+
+    const nonEmpty = Object.values(row).filter(v => v.length > 0).length;
+    if (nonEmpty < 2) continue;
+
+    rows.push(row);
+  }
+
+  return { headers, rows, rawLines };
+}
+
+// --- Strategy 2: Structure-based detection ---
+function parseStrategyStructure(items) {
+  const lines = groupByLine(items, 5);
+  const rawLines = lines.map(l => l.items.map(it => it.text).join('  '));
+
+  const countMap = {};
+  for (const line of lines) {
+    const c = line.items.length;
+    if (c >= 3) countMap[c] = (countMap[c] || 0) + 1;
+  }
+
+  let bestCount = 0, bestFreq = 0;
+  for (const [count, freq] of Object.entries(countMap)) {
+    if (freq > bestFreq && parseInt(count) >= 3) {
+      bestFreq = freq;
+      bestCount = parseInt(count);
     }
   }
 
-  for (let i = 0; i < columns.length; i++) {
-    columns[i].endX = i < columns.length - 1 ? columns[i + 1].x : columns[i].x + 300;
+  if (bestCount < 3 || bestFreq < 3) return { headers: [], rows: [], rawLines };
+
+  addLog(`  Detected consistent ${bestCount}-column structure (${bestFreq} lines)`);
+
+  const tableLines = lines.filter(l => l.items.length === bestCount);
+  const headerLine = tableLines[0];
+  const columns = [];
+  for (let i = 0; i < headerLine.items.length; i++) {
+    const nextX = i < headerLine.items.length - 1
+      ? (headerLine.items[i].x + headerLine.items[i + 1].x) / 2
+      : headerLine.items[i].x + 300;
+    columns.push({
+      name: headerLine.items[i].text.trim() || `Column ${i + 1}`,
+      x: headerLine.items[i].x,
+      endX: nextX
+    });
   }
 
-  return columns;
+  const headers = columns.map(c => c.name);
+  const rows = [];
+
+  for (let i = 1; i < tableLines.length; i++) {
+    const line = tableLines[i];
+    const row = {};
+    for (const col of columns) {
+      const matching = line.items.filter(it => it.x >= col.x - 3 && it.x < col.endX);
+      row[col.name] = matching.map(it => it.text).join(' ').trim();
+    }
+
+    const combined = Object.values(row).join(' ');
+    if (isNonDataRow(combined)) continue;
+    if (combined.trim().length < 5) continue;
+
+    rows.push(row);
+  }
+
+  return { headers, rows, rawLines };
 }
 
-function parseDataRow(line, columns) {
-  const lineItems = line.items;
-  if (lineItems.length === 0) return null;
+// --- Strategy 3: Regex-based pattern extraction ---
+function parseStrategyRegex(items) {
+  const lines = groupByLine(items, 5);
+  const rawLines = lines.map(l => l.items.map(it => it.text).join('  '));
 
-  const row = {};
-  for (let c = 0; c < columns.length; c++) {
-    const col = columns[c];
-    const matching = lineItems.filter(it => it.x >= col.x - 5 && it.x < col.endX + 5);
-    let value = matching.map(it => it.text).join(' ').trim().replace(/\s+/g, ' ');
-    row[col.name] = value;
-  }
-
-  const dateVal = (row['Date'] || '').trim();
-  const hasDate = /^\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}$/.test(dateVal);
-
-  const amtFields = ['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance'];
-  let hasAmount = false;
-  for (const f of amtFields) {
-    const v = (row[f] || '').trim();
-    if (/^[\d,]+\.\d{2}$/.test(v) && parseFloat(v.replace(/,/g, '')) > 0) { hasAmount = true; break; }
-  }
-
-  if (!hasDate && !hasAmount) return null;
-
-  const narration = (row['Narration'] || '').toLowerCase();
-  const combined = Object.values(row).join(' ').toLowerCase();
-  if (narration.match(/^(total|opening\s*balance|closing\s*balance|page\s*\d|continued)/)) return null;
-  if (combined.includes('statement of account') || combined.includes('account statement')) return null;
-
-  return row;
-}
-
-// ========== Fallback Regex Parser ==========
-function parseFallback(items) {
-  const lines = groupByLine(items, 3);
-  const rawLines = lines.map(l => l.items.map(it => it.text).join(' '));
-
-  const headers = ['Date', 'Narration', 'Cheq./Ref.No.', 'Value Dt.', 'Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance'];
+  const defaultHeaders = ['Date', 'Narration', 'Cheq./Ref.No.', 'Value Dt.', 'Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance'];
   const rows = [];
   const dateRegex = /^(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})\s+(.+)/;
 
@@ -936,41 +1025,118 @@ function parseFallback(items) {
 
     const date = m[1];
     const rest = m[2].trim();
+
     const amtRegex = /([\d,]+\.\d{2})/g;
     const amounts = [];
     let am;
-    while ((am = amtRegex.exec(rest)) !== null) amounts.push(am);
+    while ((am = amtRegex.exec(rest)) !== null) amounts.push(am[1]);
     if (amounts.length === 0) continue;
 
-    const firstAmtIdx = rest.indexOf(amounts[0][1]);
+    const firstAmtIdx = rest.indexOf(amounts[0]);
     const narrationPart = rest.substring(0, firstAmtIdx).trim();
 
     let narration = narrationPart;
     let refNo = '';
     let valueDt = '';
-    const refMatch = narrationPart.match(/\s+(\d{6,12})\s*$/);
-    if (refMatch) { refNo = refMatch[1]; narration = narrationPart.substring(0, narrationPart.lastIndexOf(refNo)).trim(); }
+
+    const refMatch = narration.match(/\s+(\d{6,14})\s*$/);
+    if (refMatch) {
+      refNo = refMatch[1];
+      narration = narration.substring(0, narration.lastIndexOf(refNo)).trim();
+    }
+
     const dtMatch = narration.match(/(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})\s*$/);
-    if (dtMatch) { valueDt = dtMatch[1]; narration = narration.substring(0, narration.lastIndexOf(dtMatch[1])).trim(); }
+    if (dtMatch && dtMatch[1] !== date) {
+      valueDt = dtMatch[1];
+      narration = narration.substring(0, narration.lastIndexOf(dtMatch[1])).trim();
+    }
 
     let withdrawal = '', deposit = '', balance = '';
-    if (amounts.length >= 1) balance = amounts[amounts.length - 1][1];
-    if (amounts.length >= 2) deposit = amounts[amounts.length - 2][1];
+    if (amounts.length >= 1) balance = amounts[amounts.length - 1];
+    if (amounts.length >= 2) deposit = amounts[amounts.length - 2];
     if (amounts.length >= 3) {
       const narrLower = narration.toLowerCase();
-      if (narrLower.includes('withdraw') || narrLower.includes('neft') || narrLower.includes('rtgs') || narrLower.includes('transfer') || narrLower.includes('payment') || narrLower.includes('debit')) {
-        withdrawal = amounts[amounts.length - 2][1];
-        deposit = amounts[amounts.length - 3][1];
+      if (narrLower.includes('withdraw') || narrLower.includes('neft') || narrLower.includes('rtgs') ||
+          narrLower.includes('transfer') || narrLower.includes('payment') || narrLower.includes('debit') ||
+          narrLower.includes('imps') || narrLower.includes('upi')) {
+        withdrawal = amounts[amounts.length - 2];
+        deposit = amounts[amounts.length - 3];
       } else {
-        withdrawal = amounts[amounts.length - 3][1];
+        withdrawal = amounts[amounts.length - 3];
       }
     }
 
-    if (narration.toLowerCase().match(/^(total|opening|closing|page)/)) continue;
-    rows.push({ Date: date, Narration: narration, 'Cheq./Ref.No.': refNo, 'Value Dt.': valueDt, 'Withdrawal Amt.': withdrawal, 'Deposit Amt.': deposit, 'Closing Balance': balance });
+    if (isNonDataRow(narration)) continue;
+
+    rows.push({
+      'Date': date, 'Narration': narration, 'Cheq./Ref.No.': refNo,
+      'Value Dt.': valueDt, 'Withdrawal Amt.': withdrawal,
+      'Deposit Amt.': deposit, 'Closing Balance': balance
+    });
   }
 
-  return { headers, rows };
+  return { headers: defaultHeaders, rows, rawLines };
+}
+
+// --- Strategy 4: Broad extraction ---
+function parseStrategyBroad(items) {
+  const lines = groupByLine(items, 5);
+  const rawLines = lines.map(l => l.items.map(it => it.text).join('  '));
+
+  let headerLine = null;
+  let headerIdx = -1;
+
+  for (let i = 0; i < Math.min(lines.length, 40); i++) {
+    if (lines[i].items.length >= 3 && !looksLikeDate(lines[i].items[0].text)) {
+      headerLine = lines[i];
+      headerIdx = i;
+      break;
+    }
+  }
+
+  const defaultHeaders = headerLine
+    ? headerLine.items.map(it => it.text.trim() || 'Column')
+    : ['Column 1', 'Column 2', 'Column 3', 'Column 4', 'Column 5'];
+
+  const columns = [];
+  if (headerLine) {
+    for (let i = 0; i < headerLine.items.length; i++) {
+      const nextX = i < headerLine.items.length - 1
+        ? (headerLine.items[i].x + headerLine.items[i + 1].x) / 2
+        : headerLine.items[i].x + 300;
+      columns.push({ x: headerLine.items[i].x, endX: nextX });
+    }
+  }
+
+  const rows = [];
+  const startIdx = headerIdx >= 0 ? headerIdx + 1 : 0;
+
+  for (let i = startIdx; i < lines.length; i++) {
+    const line = lines[i];
+    const lineText = line.items.map(it => it.text).join(' ');
+
+    if (!looksLikeDate(line.items[0]?.text || '') && !looksLikeDate(lineText)) continue;
+    if (isNonDataRow(lineText)) continue;
+
+    let row;
+    if (columns.length > 0) {
+      row = {};
+      for (let c = 0; c < columns.length; c++) {
+        const matching = line.items.filter(it => it.x >= columns[c].x - 3 && it.x < columns[c].endX);
+        row[defaultHeaders[c]] = matching.map(it => it.text).join(' ').trim();
+      }
+    } else {
+      row = {};
+      line.items.forEach((it, idx) => {
+        const key = idx < defaultHeaders.length ? defaultHeaders[idx] : `Column ${idx + 1}`;
+        row[key] = it.text.trim();
+      });
+    }
+
+    if (Object.values(row).some(v => v.length > 0)) rows.push(row);
+  }
+
+  return { headers: defaultHeaders, rows, rawLines };
 }
 
 // ========== Render Preview ==========
@@ -987,19 +1153,19 @@ function renderPreview(headers, rows) {
   }
 
   const previewRows = rows.slice(0, 200);
-  const numCols = new Set(['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance']);
+  const numColNames = new Set(['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance', 'Amount', 'Debit', 'Credit', 'Balance']);
 
   for (let i = 0; i < previewRows.length; i++) {
     const tr = document.createElement('tr');
     tr.style.opacity = '0';
     tr.style.transform = 'translateY(8px)';
-    tr.style.transition = `all 0.3s ease ${i * 15}ms`;
+    tr.style.transition = `all 0.3s ease ${Math.min(i * 15, 800)}ms`;
 
     for (const h of headers) {
       const td = document.createElement('td');
       const val = (rows[i][h] || '').trim();
       td.textContent = val || '—';
-      if (numCols.has(h)) td.classList.add('num-cell');
+      if (numColNames.has(h)) td.classList.add('num-cell');
       tr.appendChild(td);
     }
     tbody.appendChild(tr);
@@ -1024,6 +1190,7 @@ function renderPreview(headers, rows) {
 
   document.getElementById('statRows').textContent = rows.length;
   document.getElementById('statCols').textContent = headers.length;
+  document.getElementById('statPages').textContent = totalPagesExtracted;
 }
 
 // ========== Download Excel ==========
@@ -1035,7 +1202,11 @@ function downloadExcel(headers, rows) {
 
   const colWidths = {
     'Date': 14, 'Narration': 50, 'Cheq./Ref.No.': 18, 'Value Dt.': 14,
-    'Withdrawal Amt.': 20, 'Deposit Amt.': 20, 'Closing Balance': 22
+    'Withdrawal Amt.': 20, 'Deposit Amt.': 20, 'Closing Balance': 22,
+    'Amount': 18, 'Debit': 18, 'Credit': 18, 'Balance': 22,
+    'Particulars': 45, 'Description': 45, 'Details': 40, 'Remarks': 40,
+    'Ref No.': 18, 'Reference': 18, 'Type': 12, 'Category': 14,
+    'Sr. No.': 10, 'S.No.': 10, 'Sl No': 10
   };
   ws['!cols'] = headers.map(h => ({ wch: colWidths[h] || 15 }));
 
@@ -1056,12 +1227,12 @@ function downloadExcel(headers, rows) {
     }
   }
 
-  const numCols = new Set(['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance']);
+  const numColNames = new Set(['Withdrawal Amt.', 'Deposit Amt.', 'Closing Balance', 'Amount', 'Debit', 'Credit', 'Balance']);
   for (let r = 1; r <= rows.length; r++) {
     for (let c = 0; c < headers.length; c++) {
       const cell = ws[XLSX.utils.encode_cell({ r, c })];
       if (cell) {
-        const isNum = numCols.has(headers[c]);
+        const isNum = numColNames.has(headers[c]);
         cell.s = {
           font: { name: 'Calibri', sz: 11 },
           alignment: { horizontal: isNum ? 'right' : 'left' },
