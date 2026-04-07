@@ -197,7 +197,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--fg);overf
 
 <footer class="border-t border-brand-border/30 py-10 px-6">
   <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-    <div class="flex items-center gap-2 text-sm text-brand-muted"><div class="w-6 h-6 rounded bg-brand-accent flex items-center justify-center"><i class="fa-solid fa-file-excel text-brand-bg text-[10px]"></i></div><span>PDF2XL Pro</span><span class="text-brand-border">|</span><span>Client-side only. No data leaves your device.</span></div>
+    <div class="flex items-center gap-2 text-sm text-brand-muted"><div class="w-6 h-6 rounded bg-brand-accent flex items-center justify-center"><i class="fa-solid fa-file-excel text-brand-bg text-[10px]</i></div><span>PDF2XL Pro</span><span class="text-brand-border">|</span><span>Client-side only. No data leaves your device.</span></div>
     <a href="https://gravatar.com/katragaddasurendra" target="_blank" rel="noopener noreferrer" class="footer-credit" aria-label="Developer: katragadaa_surendra"><img src="https://ui-avatars.com/api/?name=KS&background=0d1512&color=00d67e&size=48&rounded=true&bold=true" alt="Dev" width="24" height="24"><span class="font-semibold" style="letter-spacing:.2px">katragadaa_surendra</span><i class="fa-solid fa-arrow-up-right-from-square dev-arrow"></i></a>
   </div>
   <div class="max-w-7xl mx-auto mt-4 text-center"><div class="text-xs text-brand-muted/40">Built with PDF.js + SheetJS. No server required.</div></div>
@@ -208,10 +208,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--fg);overf
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-// ========== Particles ==========
+// ==================== PARTICLES ====================
 (function(){const c=document.getElementById('heroCanvas'),x=c.getContext('2d');let p=[],m={x:-1e3,y:-1e3},w,h;function rs(){w=c.width=c.parentElement.offsetWidth;h=c.height=c.parentElement.offsetHeight}rs();window.addEventListener('resize',rs);c.parentElement.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();m.x=e.clientX-r.left;m.y=e.clientY-r.top});const N=Math.min(80,Math.floor(innerWidth/18));for(let i=0;i<N;i++)p.push({x:Math.random()*2e3,y:Math.random()*1200,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+.5,a:Math.random()*.5+.2});function d(){x.clearRect(0,0,w,h);for(let i=0;i<p.length;i++){for(let j=i+1;j<p.length;j++){const dx=p[i].x-p[j].x,dy=p[i].y-p[j].y,ds=Math.sqrt(dx*dx+dy*dy);if(ds<150){x.beginPath();x.moveTo(p[i].x,p[i].y);x.lineTo(p[j].x,p[j].y);x.strokeStyle=`rgba(0,214,126,${.08*(1-ds/150)})`;x.lineWidth=.5;x.stroke()}}const dx2=p[i].x-m.x,dy2=p[i].y-m.y,d2=Math.sqrt(dx2*dx2+dy2*dy2);if(d2<200){x.beginPath();x.moveTo(p[i].x,p[i].y);x.lineTo(m.x,m.y);x.strokeStyle=`rgba(0,214,126,${.15*(1-d2/200)})`;x.lineWidth=.8;x.stroke()}}for(const q of p){x.beginPath();x.arc(q.x,q.y,q.r,0,Math.PI*2);x.fillStyle=`rgba(0,214,126,${q.a})`;x.fill();q.x+=q.vx;q.y+=q.vy;if(q.x<0||q.x>w)q.vx*=-1;if(q.y<0||q.y>h)q.vy*=-1}requestAnimationFrame(d)}d()})();
 
-// ========== UI ==========
+// ==================== UI HELPERS ====================
 const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')}),{threshold:.1});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 const sObs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){const el=x.target,t=parseInt(el.dataset.count);let c=0;const s=Math.max(1,Math.ceil(t/40));const ti=setInterval(()=>{c+=s;if(c>=t){c=t;clearInterval(ti)}el.textContent=c},30);sObs.unobserve(el)}}),{threshold:.5});
@@ -227,7 +227,7 @@ fileInput.addEventListener('change',e=>{if(e.target.files[0])handleFile(e.target
 function handleFile(f){if(f.type!=='application/pdf'){showToast('Please upload a PDF file.','error');return}currentFile=f;document.getElementById('fileName').textContent=f.name;document.getElementById('fileSize').textContent=fmtSize(f.size);fileInfo.classList.remove('hidden');dropZone.style.opacity='.5';dropZone.style.pointerEvents='none'}
 document.getElementById('btnRemove').addEventListener('click',()=>{currentFile=null;fileInput.value='';fileInfo.classList.add('hidden');dropZone.style.opacity='1';dropZone.style.pointerEvents='auto'});
 document.getElementById('btnConvert').addEventListener('click',()=>{if(currentFile)startConversion(currentFile)});
-document.getElementById('btnNewFile').addEventListener('click',()=>{showState('upload');currentFile=null;convertedGrid=null;fileInput.value='';fileInfo.classList.add('hidden');dropZone.style.opacity='1';dropZone.style.pointerEvents='auto'});
+document.getElementById('btnNewFile').addEventListener('click',()=>{showState('upload');currentFile=null;convertedGrid=null;fileInput.value='';fileInfo.classList.add('hidden');dropZone.style.opacity='1';dropZone.style.pointerEvents='auto';document.getElementById('rawTextPanel').classList.add('hidden')});
 document.getElementById('btnDownload').addEventListener('click',()=>{if(convertedGrid)downloadExcel(convertedGrid)});
 document.getElementById('btnRawText').addEventListener('click',()=>{document.getElementById('rawTextPanel').classList.toggle('hidden')});
 function fmtSize(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';if(b<1073741824)return(b/1048576).toFixed(1)+' MB';return(b/1073741824).toFixed(2)+' GB'}
@@ -236,9 +236,310 @@ function updateProgress(p,t,st,d){document.getElementById('progressBar').style.w
 function addLog(m){const l=document.getElementById('logContent'),d=document.createElement('div'),n=new Date(),ts=n.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});d.textContent=`[${ts}] ${m}`;l.appendChild(d);l.parentElement.scrollTop=l.parentElement.scrollHeight}
 function colLetter(n){let s='';n++;while(n>0){n--;s=String.fromCharCode(65+(n%26))+s;n=Math.floor(n/26)}return s}
 
-// ========================================================================
-// MAIN CONVERSION — Export PDF As-Is to Grid
-// ========================================================================
+// =========================================================================
+// CONVERSION ENGINE — Complete rewrite for accuracy
+// =========================================================================
+
+// --- Utility: check if a string looks like a financial amount ---
+function isAmountLike(s){
+  const t=s.trim();
+  if(!t)return true;
+  // B/F, C/F balance markers
+  if(/^[BCbc]\.?[Ff]$/i.test(t))return true;
+  // Pure digits with commas, dots, minus, spaces
+  if(/^[\d,.\-\s]+$/.test(t))return true;
+  // Amount with Dr/Cr suffix
+  if(/^[\d,.\-\s]+\s*(Dr|Cr|DR|CR)\.?\s*$/i.test(t))return true;
+  return false;
+}
+
+// --- Phase 1: Extract text items from all pages ---
+async function extractAllPages(pdf,onProgress){
+  const allPageData=[];
+  const total=pdf.numPages;
+  for(let i=1;i<=total;i++){
+    const page=await pdf.getPage(i);
+    const tc=await page.getTextContent();
+    const vp=page.getViewport({scale:1});
+    const items=[];
+    let minY=Infinity,maxY=-Infinity;
+    for(const item of tc.items){
+      if(!item.str||!item.str.trim())continue;
+      const tx=item.transform[4];
+      const ty=item.transform[5];
+      const scaleY=Math.abs(item.transform[3])||1;
+      const h=(item.height>0?item.height:10)*scaleY;
+      const w=item.width;
+      // Flip Y to top-down coordinate system
+      const yTop=vp.height-ty-h;
+      items.push({text:item.str,x:tx,y:yTop,width:Math.max(w,0),height:Math.max(h,1)});
+      if(yTop<minY)minY=yTop;
+      if(yTop+h>maxY)maxY=yTop+h;
+    }
+    allPageData.push({items,minY,maxY,vpHeight:vp.height});
+    if(onProgress)onProgress(i,total,items.length);
+    await new Promise(r=>setTimeout(r,5));
+  }
+  return allPageData;
+}
+
+// --- Phase 2: Apply Y offsets so pages stack vertically ---
+function applyPageOffsets(pageDataArr){
+  const allItems=[];
+  let yOff=0;
+  for(let p=0;p<pageDataArr.length;p++){
+    const pd=pageDataArr[p];
+    // Use actual text bounds, fall back to viewport height for blank pages
+    const range=(pd.maxY>pd.minY)?(pd.maxY-pd.minY):pd.vpHeight;
+    for(const it of pd.items){
+      allItems.push({...it,y:it.y-pd.minY+yOff,page:p+1});
+    }
+    yOff+=range+50; // 50px visual gap between pages
+  }
+  return allItems;
+}
+
+// --- Phase 3: Group items into rows by Y position ---
+function groupIntoRows(items){
+  if(!items.length)return[];
+  items.sort((a,b)=>a.y-b.y||a.x-b.x);
+  // Calculate dynamic tolerance from median item height
+  const heights=items.map(it=>it.height).filter(h=>h>0.5);
+  heights.sort((a,b)=>a-b);
+  const medianH=heights[Math.floor(heights.length/2)]||10;
+  const tol=Math.max(medianH*0.45,3);
+  addLog('Row tolerance: '+tol.toFixed(1)+'px (median font height: '+medianH.toFixed(1)+'px)');
+
+  const rows=[];
+  let cur={y:items[0].y,items:[items[0]]};
+  for(let i=1;i<items.length;i++){
+    if(Math.abs(items[i].y-cur.y)<=tol){
+      cur.items.push(items[i]);
+    }else{
+      cur.items.sort((a,b)=>a.x-b.x);
+      rows.push(cur);
+      cur={y:items[i].y,items:[items[i]]};
+    }
+  }
+  cur.items.sort((a,b)=>a.x-b.x);
+  rows.push(cur);
+  return rows;
+}
+
+// --- Phase 4: Merge items that are very close horizontally ---
+function mergeCloseInRows(rows,allItems){
+  // Calculate median character width for adaptive merge gap
+  const cws=allItems
+    .filter(it=>it.width>0&&it.text.trim().length>0&&it.height>0)
+    .map(it=>it.width/Math.max(it.text.trim().length,1));
+  cws.sort((a,b)=>a-b);
+  const medianCW=cws[Math.floor(cws.length/2)]||6;
+  // Merge if gap is less than 1.2x the width of one character
+  const mergeGap=Math.max(medianCW*1.2,3);
+  addLog('Merge gap: '+mergeGap.toFixed(1)+'px (median char width: '+medianCW.toFixed(1)+'px)');
+
+  for(const row of rows){
+    row.items=mergeItems(row.items,mergeGap);
+  }
+  return mergeGap;
+}
+
+function mergeItems(items,gap){
+  if(items.length<=1)return items;
+  const m=[{text:items[0].text,x:items[0].x,width:items[0].width}];
+  for(let i=1;i<items.length;i++){
+    const prev=m[m.length-1];
+    const prevEnd=prev.x+prev.width;
+    const curStart=items[i].x;
+    if(curStart-prevEnd<gap&&curStart-prevEnd>-5){
+      // Merge: append text, extend width
+      prev.text=prev.text+items[i].text;
+      prev.width=(items[i].x+items[i].width)-prev.x;
+    }else{
+      m.push({text:items[i].text,x:items[i].x,width:items[i].width});
+    }
+  }
+  return m;
+}
+
+// --- Phase 5: Find the table header row ---
+function findHeaderRow(rows){
+  const kw=['date','narration','withdrawal','deposit','closing','balance','cheq','ref','value','debit','credit','particular','amount','details','description','trans'];
+  let bestIdx=-1,bestScore=0;
+  for(let i=0;i<Math.min(rows.length,50);i++){
+    const t=rows[i].items.map(it=>it.text).join(' ').toLowerCase();
+    let s=0;
+    for(const k of kw)if(t.includes(k))s++;
+    if(s>bestScore){bestScore=s;bestIdx=i}
+  }
+  return bestScore>=2?bestIdx:-1;
+}
+
+// --- Phase 6: Detect column boundaries ---
+function detectColumns(rows,headerIdx,mergeGap){
+  let boundaries=[];
+
+  if(headerIdx>=0){
+    // STRATEGY A: Use the header row's item positions to define columns
+    const hItems=rows[headerIdx].items;
+    addLog('Header at row '+headerIdx+': '+hItems.length+' columns — '+hItems.map(i=>i.text.trim()).join(' | '));
+
+    for(let i=1;i<hItems.length;i++){
+      const prevEnd=hItems[i-1].x+hItems[i-1].width;
+      const curStart=hItems[i].x;
+      const actualGap=curStart-prevEnd;
+      if(actualGap>mergeGap*0.5){
+        boundaries.push((prevEnd+curStart)/2);
+      }
+    }
+    addLog('Header-based boundaries: ['+boundaries.map(b=>Math.round(b)).join(', ')+']');
+  }
+
+  // STRATEGY B: Frequency analysis — find the most common item count per row
+  const freq={};
+  for(const r of rows){
+    const c=r.items.length;
+    if(c>=2)freq[c]=(freq[c]||0)+1;
+  }
+
+  // Find the most common count that appears in at least 5% of rows
+  let bestC=0,bestF=0;
+  const minRows=Math.max(rows.length*0.05,2);
+  for(const[c,f]of Object.entries(freq)){
+    if(parseInt(c)>=2&&f>=minRows&&f>bestF){bestF=f;bestC=parseInt(c)}
+  }
+
+  if(bestC>=2&&boundaries.length!==bestC-1){
+    // Frequency-based boundaries (used as supplement or replacement)
+    const gaps=[];
+    for(const r of rows){
+      if(r.items.length===bestC){
+        for(let i=1;i<r.items.length;i++){
+          const prevEnd=r.items[i-1].x+r.items[i-1].width;
+          const curStart=r.items[i].x;
+          if(curStart-prevEnd>mergeGap*0.5){
+            gaps.push((prevEnd+curStart)/2);
+          }
+        }
+      }
+    }
+
+    if(gaps.length>0){
+      gaps.sort((a,b)=>a-b);
+      // Cluster gaps within 30px tolerance
+      const clusters=[];
+      let cl={vals:[gaps[0]],sum:gaps[0]};
+      for(let i=1;i<gaps.length;i++){
+        if(gaps[i]-cl.vals[cl.vals.length-1]<30){
+          cl.vals.push(gaps[i]);cl.sum+=gaps[i];
+        }else{
+          cl.center=cl.sum/cl.vals.length;cl.freq=cl.vals.length;
+          clusters.push({...cl});cl={vals:[gaps[i]],sum:gaps[i]};
+        }
+      }
+      cl.center=cl.sum/cl.vals.length;cl.freq=cl.vals.length;
+      clusters.push({...cl});
+
+      // Select top (bestC-1) boundaries by frequency
+      clusters.sort((a,b)=>b.freq-a.freq);
+      const freqBounds=clusters.slice(0,bestC-1).map(c=>c.center).sort((a,b)=>a-b);
+
+      if(headerIdx<0){
+        // No header — use frequency boundaries
+        boundaries=freqBounds;
+        addLog('Frequency-based: '+bestC+' cols ('+bestF+' rows), boundaries: ['+boundaries.map(b=>Math.round(b)).join(', ')+']');
+      }else{
+        addLog('Frequency check: '+bestC+' cols in '+bestF+' rows (header said '+boundaries.length+1+')');
+      }
+    }
+  }
+
+  const numCols=Math.max(boundaries.length+1,1);
+  return{boundaries,numCols};
+}
+
+// --- Phase 7: Assign items to columns ---
+function assignToColumns(rows,boundaries,numCols){
+  const grid=[];
+  const hasBounds=boundaries.length>0;
+
+  for(const row of rows){
+    let rowData;
+    if(hasBounds){
+      rowData=new Array(numCols).fill('');
+      for(const item of row.items){
+        // Use LEFT edge to determine column — prevents long narrations from jumping columns
+        let colIdx=0;
+        for(let b=0;b<boundaries.length;b++){
+          if(item.x>=boundaries[b])colIdx=b+1;
+        }
+        const txt=item.text.trim();
+        if(txt){
+          rowData[colIdx]=rowData[colIdx]?rowData[colIdx]+' '+txt:txt;
+        }
+      }
+    }else{
+      // No boundaries: each merged item = one column (guarantees zero data loss)
+      rowData=row.items.map(it=>it.text.trim());
+    }
+    if(rowData.some(v=>v.trim()))grid.push(rowData);
+  }
+  return grid;
+}
+
+// --- Phase 8: Fix misplaced items (wrapped narrations in amount columns) ---
+function fixMisplacedItems(grid,headerIdx,rows){
+  if(headerIdx<0||!grid[headerIdx])return grid;
+
+  // Determine column types from header text
+  const headers=grid[headerIdx].map(h=>(h||'').toLowerCase());
+  const amountCols=new Set();
+  let narrationCol=-1;
+
+  for(let c=0;c<headers.length;c++){
+    const h=headers[c];
+    if(h.includes('withdrawal')||h.includes('deposit')||h.includes('debit')||
+       h.includes('credit')||h.includes('amount')||h.includes('balance')){
+      amountCols.add(c);
+    }
+    if(h.includes('narration')||h.includes('particular')||h.includes('details')||
+       h.includes('description')||h.includes('trans')){
+      narrationCol=c;
+    }
+  }
+
+  if(narrationCol<0||amountCols.size===0)return grid;
+
+  let fixCount=0;
+  for(let r=0;r<grid.length;r++){
+    if(r===headerIdx)continue;
+    for(const ac of amountCols){
+      const val=(grid[r][ac]||'').trim();
+      if(val&&!isAmountLike(val)){
+        // This text doesn't belong in an amount column — move to narration
+        grid[r][narrationCol]=(grid[r][narrationCol]?grid[r][narrationCol]+' '+val:val);
+        grid[r][ac]='';
+        fixCount++;
+      }
+    }
+  }
+  if(fixCount>0)addLog('Fixed '+fixCount+' misplaced item(s) — moved to narration column');
+  return grid;
+}
+
+// --- Phase 9: Normalize grid (uniform column count) ---
+function normalizeGrid(grid){
+  let maxC=0;
+  for(const r of grid)if(r.length>maxC)maxC=r.length;
+  for(const r of grid)while(r.length<maxC)r.push('');
+  // Trim trailing fully-empty rows
+  while(grid.length>0&&grid[grid.length-1].every(v=>!v.trim()))grid.pop();
+  return{grid,numCols:maxC};
+}
+
+// =========================================================================
+// MAIN CONVERSION ORCHESTRATOR
+// =========================================================================
 async function startConversion(file){
   showState('processing');
   const mP=document.getElementById('morphPdf'),mX=document.getElementById('morphXl');
@@ -249,85 +550,97 @@ async function startConversion(file){
     updateProgress(5,'Loading PDF...','Reading file','PDF.js');
     addLog('Loading: '+file.name+' ('+fmtSize(file.size)+')');
     const ab=await file.arrayBuffer();
+
     updateProgress(10,'Loading PDF...','Parsing structure','PDF.js');
     const pdf=await pdfjsLib.getDocument({data:ab}).promise;
     totalPagesExtracted=pdf.numPages;
-    addLog(`PDF: ${totalPagesExtracted} page(s)`);
-    updateProgress(15,'Extracting Text...',`Page 1 of ${totalPagesExtracted}`,'Starting');
+    addLog('PDF: '+totalPagesExtracted+' page(s)');
 
-    // ====== Y-offset fix: each page offset below the previous ======
-    const allItems=[];
-    let yOffset=0;
-    const pageStats=[];
+    // Phase 1: Extract
+    updateProgress(15,'Extracting Text...','Page 1/'+totalPagesExtracted,'Starting');
+    const pageData=await extractAllPages(pdf,(pg,tot,cnt)=>{
+      const pct=15+Math.floor((pg/tot)*35);
+      updateProgress(pct,'Extracting Text...','Page '+pg+'/'+tot,cnt+' items');
+      addLog('Page '+pg+': '+cnt+' items');
+    });
 
-    for(let i=1;i<=totalPagesExtracted;i++){
-      const page=await pdf.getPage(i);
-      const tc=await page.getTextContent();
-      const vp=page.getViewport({scale:1});
-      let cnt=0;
-      for(const item of tc.items){
-        if(item.str&&item.str.trim()){
-          const[, , ,scaleY,tx,ty]=item.transform;
-          allItems.push({
-            text:item.str,
-            x:tx,
-            y:yOffset+(vp.height-ty),
-            width:item.width,
-            height:Math.abs(item.height*scaleY),
-            page:i
-          });
-          cnt++;
-        }
-      }
-      pageStats.push({page:i,items:cnt});
-      yOffset+=vp.height+20;
-      const pct=15+Math.floor((i/totalPagesExtracted)*45);
-      updateProgress(pct,'Extracting Text...',`Page ${i}/${totalPagesExtracted}`,`${allItems.length} items`);
-      addLog(`Page ${i}: ${cnt} items (offset Y: ${Math.round(yOffset)})`);
-      await new Promise(r=>setTimeout(r,5));
+    // Phase 2: Offset
+    updateProgress(52,'Processing Pages...','Applying page offsets','Stacking pages');
+    addLog('Applying Y-offsets for multi-page layout...');
+    const allItems=applyPageOffsets(pageData);
+    addLog('Total items across all pages: '+allItems.length);
+
+    if(allItems.length===0)throw new Error('No extractable text found. The PDF may be a scanned image.');
+
+    // Phase 3: Group rows
+    updateProgress(57,'Grouping Text...','Detecting rows','Layout analysis');
+    addLog('Grouping into rows by Y-position...');
+    await new Promise(r=>setTimeout(r,20));
+    const rows=groupIntoRows(allItems);
+    addLog(rows.length+' rows detected');
+
+    // Phase 4: Merge close items
+    updateProgress(63,'Merging Text...','Combining split words','Text processing');
+    addLog('Merging closely-spaced items...');
+    await new Promise(r=>setTimeout(r,20));
+    const mergeGap=mergeCloseInRows(rows,allItems);
+
+    // Phase 5: Find header
+    updateProgress(68,'Detecting Structure...','Finding table header','Column detection');
+    addLog('Searching for table header...');
+    await new Promise(r=>setTimeout(r,20));
+    const headerIdx=findHeaderRow(rows);
+    if(headerIdx>=0){
+      addLog('Header found at row '+headerIdx+': '+rows[headerIdx].items.map(i=>'"'+i.text.trim()+'"').join(', '));
+    }else{
+      addLog('No table header detected — will use frequency analysis');
     }
-    addLog(`Total: ${allItems.length} items, ${totalPagesExtracted} pages`);
 
-    if(allItems.length===0) throw new Error('No extractable text found. The PDF may be a scanned image.');
+    // Phase 6: Detect columns
+    updateProgress(73,'Detecting Columns...','Analyzing boundaries','Column detection');
+    addLog('Detecting column boundaries...');
+    await new Promise(r=>setTimeout(r,20));
+    const{boundaries,numCols}=detectColumns(rows,headerIdx,mergeGap);
+    addLog('Final: '+numCols+' columns, '+boundaries.length+' boundaries');
 
-    updateProgress(62,'Building Grid...','Detecting columns','Layout analysis');
-    addLog('Grouping text into rows...');
-    await new Promise(r=>setTimeout(r,30));
+    // Phase 7: Assign to columns
+    updateProgress(80,'Building Grid...','Assigning cells','Grid construction');
+    addLog('Assigning items to grid cells...');
+    await new Promise(r=>setTimeout(r,20));
+    let grid=assignToColumns(rows,boundaries,numCols);
+    addLog('Raw grid: '+grid.length+' rows');
 
-    // Group all items into rows by Y position
-    const rows=groupByLine(allItems,5);
-    addLog(`${rows.length} rows detected`);
+    // Phase 8: Fix misplaced items
+    updateProgress(85,'Fixing Layout...','Correcting wrapped narrations','Smart correction');
+    grid=fixMisplacedItems(grid,headerIdx,rows);
+    await new Promise(r=>setTimeout(r,20));
 
-    updateProgress(70,'Building Grid...','Detecting column boundaries','Midpoint clustering');
-    addLog('Detecting column boundaries via midpoint clustering...');
-    await new Promise(r=>setTimeout(r,30));
+    // Phase 9: Normalize
+    updateProgress(90,'Finalizing...','Normalizing grid','Almost done');
+    const{grid:finalGrid,numCols:finalCols}=normalizeGrid(grid);
+    addLog('Final grid: '+finalGrid.length+' rows x '+finalCols+' columns');
+    await new Promise(r=>setTimeout(r,20));
 
-    // Build the grid
-    const{grid,numCols}=buildGrid(rows);
-    addLog(`Grid built: ${grid.length} rows x ${numCols} columns`);
+    // Store for download
+    convertedGrid={grid:finalGrid,headerIdx,numCols:finalCols};
 
-    // Find header row for styling (doesn't affect export)
-    const headerIdx=findHeaderRow(grid);
-    if(headerIdx>=0) addLog(`Table header detected at row ${headerIdx}`);
+    // Render preview
+    updateProgress(93,'Rendering Preview...','Building Excel view','Preview');
+    renderExcelPreview(finalGrid,headerIdx);
 
-    updateProgress(90,'Building Preview...','Rendering Excel grid','Almost done');
-    await new Promise(r=>setTimeout(r,100));
-
-    convertedGrid={grid,headerIdx,numCols};
-    renderExcelPreview(grid,headerIdx);
-
-    // Raw text
-    const rawLines=rows.map(r=>r.items.map(it=>it.text).join(' '));
+    // Raw text (all rows as-is)
+    const rawLines=rows.map(r=>r.items.map(it=>it.text).join('  '));
     document.getElementById('rawTextContent').textContent=rawLines.join('\n');
 
-    updateProgress(100,'Conversion Complete',`${grid.length} rows from ${totalPagesExtracted} pages`,'Ready');
-    addLog('Done! Excel ready for download.');
+    // Done
+    updateProgress(100,'Conversion Complete',finalGrid.length+' rows from '+totalPagesExtracted+' pages','Ready to download');
+    addLog('DONE — '+finalGrid.length+' rows exported to grid. Download Excel for the complete file.');
 
     mP.classList.remove('processing');mX.classList.remove('processing');
     mP.classList.add('done');mX.classList.add('done');
     await new Promise(r=>setTimeout(r,800));
     showState('preview');
-    showToast(`Exported ${grid.length} rows from ${totalPagesExtracted} pages.`);
+    showToast('Converted '+finalGrid.length+' rows from '+totalPagesExtracted+' pages successfully.');
 
   }catch(err){
     addLog('ERROR: '+err.message);
@@ -336,181 +649,29 @@ async function startConversion(file){
   }
 }
 
-// ========================================================================
-// GROUP ITEMS INTO ROWS
-// ========================================================================
-function groupByLine(items,tolerance){
-  items.sort((a,b)=>b.y-a.y||a.x-b.x);
-  const lines=[];
-  if(!items.length) return lines;
-  let cur={y:items[0].y,items:[items[0]]};
-  for(let i=1;i<items.length;i++){
-    if(Math.abs(items[i].y-cur.y)<tolerance){cur.items.push(items[i])}
-    else{cur.items.sort((a,b)=>a.x-b.x);cur.items=mergeClose(cur.items,2);lines.push(cur);cur={y:items[i].y,items:[items[i]]}}
-  }
-  cur.items.sort((a,b)=>a.x-b.x);cur.items=mergeClose(cur.items,2);lines.push(cur);
-  return lines;
-}
-
-function mergeClose(items,gap){
-  if(items.length<=1)return items;
-  const m=[{text:items[0].text,x:items[0].x,width:items[0].width}];
-  for(let i=1;i<items.length;i++){
-    const p=m[m.length-1],end=p.x+p.width;
-    if(items[i].x-end<gap){p.text=p.text+' '+items[i].text;p.width=(items[i].x+items[i].width)-p.x}
-    else m.push({text:items[i].text,x:items[i].x,width:items[i].width});
-  }
-  return m;
-}
-
-// ========================================================================
-// BUILD GRID — Midpoint Clustering Column Detection
-// ========================================================================
-function buildGrid(rows){
-  // Step 1: Find target column count (most common item count for rows with 3+ items)
-  const freq={};
-  for(const r of rows){
-    const c=r.items.length;
-    if(c>=3) freq[c]=(freq[c]||0)+1;
-  }
-  let targetCols=0,maxF=0;
-  for(const[c,f] of Object.entries(freq)){
-    if(parseInt(c)>=3&&f>maxF){maxF=f;targetCols=parseInt(c)}
-  }
-
-  // Fallback: if no rows have 3+ items, check for 2+ items
-  if(targetCols<3){
-    const freq2={};
-    for(const r of rows){const c=r.items.length;if(c>=2)freq2[c]=(freq2[c]||0)+1}
-    for(const[c,f] of Object.entries(freq2)){if(parseInt(c)>=2&&f>maxF){maxF=f;targetCols=parseInt(c)}}
-  }
-
-  if(targetCols<2){
-    // Single column: each row is one cell
-    const grid=rows.map(r=>[r.items.map(it=>it.text).join(' ').trim()]).filter(r=>r[0].trim());
-    return{grid,numCols:1};
-  }
-
-  addLog(`Target columns: ${targetCols} (found in ${maxF} rows)`);
-
-  // Step 2: Collect midpoints between consecutive items on rows with targetCols items
-  const midpoints=[];
-  for(const r of rows){
-    if(r.items.length!==targetCols) continue; // only use well-formed rows
-    for(let i=1;i<r.items.length;i++){
-      const prevEnd=r.items[i-1].x+r.items[i-1].width;
-      const currStart=r.items[i].x;
-      const gap=currStart-prevEnd;
-      if(gap>3){ // only real gaps, not touching items
-        midpoints.push((prevEnd+currStart)/2);
-      }
-    }
-  }
-
-  if(midpoints.length===0){
-    // Fallback: use equal-width columns based on X range
-    let minX=Infinity,maxX=-Infinity;
-    for(const r of rows) for(const it of r.items){if(it.x<minX)minX=it.x;if(it.x+it.width>maxX)maxX=it.x+it.width}
-    const colW=(maxX-minX)/targetCols;
-    const cols=[];for(let i=0;i<targetCols;i++)cols.push({min:minX+i*colW,max:minX+(i+1)*colW});
-    const grid=assignToGrid(rows,cols);
-    return{grid,numCols:targetCols};
-  }
-
-  midpoints.sort((a,b)=>a-b);
-
-  // Step 3: Cluster midpoints within 25px tolerance
-  const clusters=[];
-  let cl={vals:[midpoints[0]],sum:midpoints[0]};
-  for(let i=1;i<midpoints.length;i++){
-    if(midpoints[i]-cl.vals[cl.vals.length-1]<25){
-      cl.vals.push(midpoints[i]);cl.sum+=midpoints[i];
-    }else{
-      cl.center=cl.sum/cl.vals.length;cl.freq=cl.vals.length;
-      clusters.push({...cl});cl={vals:[midpoints[i]],sum:midpoints[i]};
-    }
-  }
-  cl.center=cl.sum/cl.vals.length;cl.freq=cl.vals.length;
-  clusters.push({...cl});
-
-  addLog(`Found ${clusters.length} midpoint clusters`);
-
-  // Step 4: Select top (targetCols-1) boundaries by frequency
-  clusters.sort((a,b)=>b.freq-a.freq);
-  const boundaries=clusters.slice(0,targetCols-1).map(c=>c.center).sort((a,b)=>a-b);
-
-  addLog(`Column boundaries: [${boundaries.map(b=>Math.round(b)).join(', ')}]`);
-
-  // Step 5: Build column ranges
-  const cols=[];
-  let prev=0;
-  for(const b of boundaries){cols.push({min:prev,max:b});prev=b}
-  cols.push({min:prev,max:Infinity});
-
-  const grid=assignToGrid(rows,cols);
-  return{grid,numCols:cols.length};
-}
-
-function assignToGrid(rows,cols){
-  const grid=[];
-  for(const r of rows){
-    const rowData=new Array(cols.length).fill('');
-    for(const item of r.items){
-      let placed=false;
-      for(let c=0;c<cols.length;c++){
-        if(item.x>=cols[c].min-2&&item.x<cols[c].max){
-          rowData[c]=(rowData[c]?rowData[c]+' ':'')+item.text.trim();
-          placed=true;break;
-        }
-      }
-      // If item didn't fall in any column (shouldn't happen), put in last column
-      if(!placed){
-        const last=cols.length-1;
-        rowData[last]=(rowData[last]?rowData[last]+' ':'')+item.text.trim();
-      }
-    }
-    if(rowData.some(v=>v.trim().length>0)) grid.push(rowData);
-  }
-  // Trim trailing empty rows
-  while(grid.length>0&&grid[grid.length-1].every(v=>!v.trim())) grid.pop();
-  return grid;
-}
-
-// ========================================================================
-// FIND HEADER ROW (for green styling only — doesn't affect export)
-// ========================================================================
-function findHeaderRow(grid){
-  const kw=['date','narration','withdrawal','deposit','closing','balance','cheq','ref','value','debit','credit','particular','amount','details'];
-  for(let i=0;i<Math.min(grid.length,40);i++){
-    const t=grid[i].join(' ').toLowerCase();
-    let s=0;for(const k of kw)if(t.includes(k))s++;
-    if(s>=3) return i;
-  }
-  return -1;
-}
-
-// ========================================================================
+// =========================================================================
 // EXCEL PREVIEW RENDERER
-// ========================================================================
+// =========================================================================
 function renderExcelPreview(grid,headerIdx){
   const table=document.getElementById('excelGrid');
   table.innerHTML='';
   document.getElementById('excelFilename').textContent=currentFile?currentFile.name.replace(/\.pdf$/i,'')+'.xlsx':'converted_statement.xlsx';
   const numCols=grid[0]?grid[0].length:1;
 
-  // Column letters
+  // Column letters row
   const chr=document.createElement('tr');chr.className='col-header-row';
   chr.appendChild(document.createElement('th'));
   for(let c=0;c<numCols;c++){const th=document.createElement('th');th.textContent=colLetter(c);chr.appendChild(th)}
   table.appendChild(chr);
 
+  const MAX_PREVIEW=500;
+  const previewRows=grid.slice(0,MAX_PREVIEW);
   let er=1;
-  const previewRows=grid.slice(0,600);
 
   for(let i=0;i<previewRows.length;i++){
     const tr=document.createElement('tr');
-    if(i===headerIdx) tr.className='statement-header';
-    tr.style.opacity='0';tr.style.transition=`opacity .25s ease ${Math.min(i*8,400)}ms`;
+    if(i===headerIdx)tr.className='statement-header';
+    tr.style.opacity='0';tr.style.transition=`opacity .2s ease ${Math.min(i*6,300)}ms`;
 
     const nd=document.createElement('td');
     nd.className='data-row-header';
@@ -520,23 +681,18 @@ function renderExcelPreview(grid,headerIdx){
 
     for(let c=0;c<numCols;c++){
       const td=document.createElement('td');
-      if(i===headerIdx){
-        // Green header cell — already styled by .statement-header td
-      }else{
-        td.className='data-cell';
-      }
       td.textContent=previewRows[i][c]||'';
       tr.appendChild(td);
     }
     table.appendChild(tr);
-    requestAnimationFrame(()=>{requestAnimationFrame(()=>{tr.style.opacity='1'})});
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{tr.style.opacity='1'}));
   }
 
-  if(grid.length>600){
+  if(grid.length>MAX_PREVIEW){
     const tr=document.createElement('tr');
     const nd=document.createElement('td');nd.className='data-row-header';nd.textContent=er++;tr.appendChild(nd);
     const td=document.createElement('td');td.colSpan=numCols;td.className='data-cell';td.style.textAlign='center';td.style.color='#888';td.style.fontStyle='italic';
-    td.textContent=`Showing 600 of ${grid.length} rows. Download Excel for full data.`;tr.appendChild(td);table.appendChild(tr);
+    td.textContent='Showing '+MAX_PREVIEW+' of '+grid.length+' rows. Download Excel for the complete file.';tr.appendChild(td);table.appendChild(tr);
   }
 
   // Formula bar hover
@@ -552,79 +708,69 @@ function renderExcelPreview(grid,headerIdx){
   document.getElementById('statPages').textContent=totalPagesExtracted;
 }
 
-// ========================================================================
-// EXCEL DOWNLOAD — Full Grid Export
-// ========================================================================
+// =========================================================================
+// EXCEL DOWNLOAD — Exports the COMPLETE grid, no filtering
+// =========================================================================
 function downloadExcel(data){
   const{grid,headerIdx,numCols}=data;
   const wb=XLSX.utils.book_new();
 
-  // Build aoa from grid (as-is, no filtering)
+  // Build array-of-arrays from the complete grid (no row filtering)
   const aoa=grid.map(row=>row.map(v=>v||''));
-
   const ws=XLSX.utils.aoa_to_sheet(aoa);
 
-  // Calculate column widths based on max content length per column
+  // Calculate column widths from actual content
   const colWidths=[];
   for(let c=0;c<numCols;c++){
     let maxLen=8;
     for(let r=0;r<grid.length;r++){
       const val=(grid[r][c]||'').trim();
-      if(val.length>maxLen) maxLen=val.length;
+      if(val.length>maxLen)maxLen=val.length;
     }
-    colWidths.push({wch:Math.min(Math.max(maxLen*1.1,10),55)});
+    colWidths.push({wch:Math.min(Math.max(maxLen*1.05,10),60)});
   }
   ws['!cols']=colWidths;
 
-  // Detect amount-like columns for right-alignment
+  // Identify amount columns from header for right-alignment
   const amountCols=new Set();
-  if(headerIdx>=0){
+  if(headerIdx>=0&&grid[headerIdx]){
     for(let c=0;c<numCols;c++){
       const h=(grid[headerIdx][c]||'').toLowerCase();
-      if(h.includes('withdrawal')||h.includes('deposit')||h.includes('balance')||h.includes('debit')||h.includes('credit')||h.includes('amount')){
+      if(h.includes('withdrawal')||h.includes('deposit')||h.includes('balance')||
+         h.includes('debit')||h.includes('credit')||h.includes('amount')){
         amountCols.add(c);
       }
     }
   }
 
-  // Style header row
-  if(headerIdx>=0){
-    for(let c=0;c<numCols;c++){
-      const cell=ws[XLSX.utils.encode_cell({r:headerIdx,c})];
-      if(cell){
-        cell.s={
-          font:{bold:true,sz:11,name:'Calibri',color:{rgb:'FFFFFF'}},
-          fill:{fgColor:{rgb:'217346'}},
-          alignment:{horizontal:'center',vertical:'center',wrapText:true},
-          border:{top:{style:'thin',color:{rgb:'1A5E35'}},bottom:{style:'thin',color:{rgb:'1A5E35'}},left:{style:'thin',color:{rgb:'1A5E35'}},right:{style:'thin',color:{rgb:'1A5E35'}}}
-        };
-      }
-    }
-  }
-
-  // Style all other rows
+  // Apply cell styles
   for(let r=0;r<grid.length;r++){
-    if(r===headerIdx) continue;
     for(let c=0;c<numCols;c++){
-      const cell=ws[XLSX.utils.encode_cell({r,c})];
-      if(cell){
-        const isAmt=amountCols.has(c);
-        cell.s={
-          font:{name:'Calibri',sz:11},
-          alignment:{horizontal:isAmt?'right':'left',vertical:'center',wrapText:true},
-          border:{top:{style:'thin',color:{rgb:'D4D4D4'}},bottom:{style:'thin',color:{rgb:'D4D4D4'}},left:{style:'thin',color:{rgb:'D4D4D4'}},right:{style:'thin',color:{rgb:'D4D4D4'}}},
-          fill:r%2===0?{fgColor:{rgb:'F3F3F3'}}:{fgColor:{rgb:'FFFFFF'}}
-        };
-      }
+      const addr=XLSX.utils.encode_cell({r,c});
+      if(!ws[addr])continue;
+      const isHeader=(r===headerIdx);
+      const isAmt=amountCols.has(c);
+      ws[addr].s={
+        font:{name:'Calibri',sz:11,bold:isHeader,color:isHeader?{rgb:'FFFFFF'}:undefined},
+        fill:isHeader?{fgColor:{rgb:'217346'}}:(r%2===0?{fgColor:{rgb:'F3F3F3'}}:{fgColor:{rgb:'FFFFFF'}}),
+        alignment:{horizontal:isHeader?'center':(isAmt?'right':'left'),vertical:'center',wrapText:true},
+        border:{
+          top:{style:'thin',color:{rgb:isHeader?'1A5E35':'D4D4D4'}},
+          bottom:{style:'thin',color:{rgb:isHeader?'1A5E35':'D4D4D4'}},
+          left:{style:'thin',color:{rgb:isHeader?'1A5E35':'D4D4D4'}},
+          right:{style:'thin',color:{rgb:isHeader?'1A5E35':'D4D4D4'}}
+        }
+      };
     }
   }
 
   XLSX.utils.book_append_sheet(wb,ws,'Statement');
   const fn=currentFile?currentFile.name.replace(/\.pdf$/i,'')+'.xlsx':'converted_statement.xlsx';
   XLSX.writeFile(wb,fn);
-  showToast('Excel file downloaded — all pages exported!');
+  showToast('Excel downloaded — all '+grid.length+' rows exported!');
 }
 
+// ==================== SMOOTH SCROLL & STEP LINES ====================
 document.querySelectorAll('a[href^="#"]').forEach(l=>{l.addEventListener('click',e=>{const t=document.querySelector(l.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}})});
 const stObs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)setTimeout(()=>x.target.classList.add('active'),300)}),{threshold:.3});
 document.querySelectorAll('.step-line').forEach(el=>stObs.observe(el));
